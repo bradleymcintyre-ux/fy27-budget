@@ -1,0 +1,3037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FY27 Budget — UK Distribution</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a2433; }
+
+    /* ── Header ── */
+    .header { background: linear-gradient(135deg, #3a1f6b 0%, #542E91 100%); color: white; padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; }
+    .header-left h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.03em; }
+    .header-left p { opacity: 0.65; font-size: 0.875rem; margin-top: 0.3rem; }
+    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; }
+    .badge { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); padding: 0.35rem 1rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    /* ── Layout ── */
+    .container { max-width: 1380px; margin: 0 auto; padding: 2rem 2.5rem; }
+    .section { margin-bottom: 2.75rem; }
+    .section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.25rem; }
+    .section-title { font-size: 1.1rem; font-weight: 800; color: #0d1f3c; padding-bottom: 0.4rem; border-bottom: 3px solid #2A77B6; display: inline-block; }
+    .section-sub { font-size: 0.8rem; color: #6b7280; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+
+    /* ── Cards ── */
+    .card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+    .card-title { font-size: 0.9rem; font-weight: 700; color: #374151; margin-bottom: 1.25rem; }
+
+    /* ── KPI Cards ── */
+    .kpi-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-left: 5px solid; }
+    .kpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; }
+    .kpi-value { font-size: 2rem; font-weight: 900; color: #0d1f3c; margin: 0.4rem 0 0.3rem; line-height: 1; }
+    .kpi-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .kpi-ly { font-size: 0.78rem; color: #9ca3af; }
+    .kpi-abs { font-size: 0.78rem; color: #374151; font-weight: 700; }
+    .pill { font-size: 0.72rem; font-weight: 800; padding: 0.18rem 0.55rem; border-radius: 1rem; }
+    .pill.up { background: #dcfce7; color: #15803d; }
+    .pill.down { background: #fee2e2; color: #B82A31; }
+    .pill.flat { background: #f3f4f6; color: #6b7280; }
+
+    /* ── Growth Hero Banner ── */
+    .growth-banner { background: linear-gradient(135deg, #3a1f6b 0%, #2A77B6 100%); color: white; border-radius: 16px; padding: 2rem 2.5rem; margin-bottom: 1.5rem; }
+    .growth-banner-inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+    .growth-banner h2 { font-size: 1rem; font-weight: 600; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.06em; }
+    .growth-banner .big-number { font-size: 3.5rem; font-weight: 900; color: #4ade80; line-height: 1.1; }
+    .growth-banner .big-label { font-size: 0.85rem; opacity: 0.7; margin-top: 0.25rem; }
+    .growth-stats { display: flex; gap: 2.5rem; }
+    .growth-stat { text-align: center; }
+    .growth-stat-val { font-size: 1.5rem; font-weight: 800; }
+    .growth-stat-lbl { font-size: 0.72rem; opacity: 0.65; margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .growth-divider { width: 1px; background: rgba(255,255,255,0.2); height: 60px; }
+
+    /* ── Contributor Cards ── */
+    .contributor-card { background: white; border-radius: 14px; padding: 1.25rem 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-top: 4px solid; position: relative; overflow: hidden; }
+    .contributor-card::after { content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px; border-radius: 50%; opacity: 0.06; transform: translate(20px, -20px); }
+    .contributor-rank { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.55; }
+    .contributor-name { font-size: 1rem; font-weight: 800; margin: 0.2rem 0 0.5rem; color: #0d1f3c; }
+    .contributor-amount { font-size: 1.6rem; font-weight: 900; }
+    .contributor-pct { font-size: 0.8rem; color: #6b7280; margin-top: 0.1rem; }
+    .contributor-share-bar { height: 4px; background: #f3f4f6; border-radius: 2px; margin-top: 0.75rem; }
+    .contributor-share-fill { height: 4px; border-radius: 2px; }
+
+    /* ── Distribution Table ── */
+    .dist-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .dist-table thead th { padding: 0.65rem 1rem; background: #f8fafc; color: #64748b; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; text-align: right; }
+    .dist-table thead th:first-child { text-align: left; }
+    .dist-table tbody td { padding: 0.8rem 1rem; border-bottom: 1px solid #f1f5f9; text-align: right; }
+    .dist-table tbody td:first-child { text-align: left; font-weight: 700; color: #1e293b; }
+    .dist-table tbody tr:last-child td { border-bottom: none; }
+    .dist-table .product-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.5rem; }
+    .dist-table .total-row td { background: #f8fafc; font-weight: 800; color: #0d1f3c; }
+    .dist-table .pct-bar { display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end; }
+    .dist-table .bar-bg { width: 60px; height: 6px; background: #f3f4f6; border-radius: 3px; }
+    .dist-table .bar-fill { height: 6px; border-radius: 3px; }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .tab-btn { padding: 0.5rem 1.25rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: 2px solid #e5e7eb; background: white; color: #6b7280; transition: all 0.15s; }
+    .tab-btn:hover { border-color: #2A77B6; color: #2A77B6; }
+    .tab-btn.active { border-color: transparent; color: white; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: flex; flex-direction: column; gap: 1.5rem; }
+    .tab-pane-top { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 768px) { .tab-pane-top { grid-template-columns: 1fr; } }
+
+    /* ── Product P&L Table ── */
+    .pl-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .pl-table th { padding: 0.6rem 1rem; background: #f8fafc; color: #64748b; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: right; }
+    .pl-table th:first-child { text-align: left; }
+    .pl-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #f1f5f9; text-align: right; }
+    .pl-table td:first-child { text-align: left; color: #374151; }
+    .pl-table tr:last-child td { border-bottom: none; }
+    .pl-table .section-row td { background: #f8fafc; color: #64748b; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.4rem 1rem; }
+    .pl-table .highlight-row td { background: #eff6ff; font-weight: 800; color: #2A77B6; }
+    .pl-table .gp-row td { background: #f0fdf4; font-weight: 800; color: #15803d; }
+    .num-ly { color: #9ca3af; font-weight: 500; }
+    .num-bud { font-weight: 700; color: #0d1f3c; }
+
+    /* ── KPI Mini Cards in tabs ── */
+    .product-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 0; }
+    .prod-kpi { background: #f8fafc; border-radius: 10px; padding: 1rem 1.25rem; }
+    .prod-kpi-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; }
+    .prod-kpi-val { font-size: 1.3rem; font-weight: 900; color: #0d1f3c; margin: 0.2rem 0 0.15rem; }
+    .prod-kpi-row { display: flex; align-items: center; gap: 0.4rem; }
+    .prod-kpi-ly { font-size: 0.72rem; color: #94a3b8; }
+
+    /* ── Context Section ── */
+    .context-box { background: white; border-radius: 14px; padding: 2rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+    .context-box .context-body { font-size: 0.9rem; line-height: 1.75; color: #374151; white-space: pre-wrap; }
+    .context-placeholder { border: 2px dashed #e2e8f0; text-align: center; color: #94a3b8; padding: 3rem 2rem; border-radius: 14px; background: white; }
+    .context-placeholder p { margin-top: 0.5rem; font-size: 0.85rem; }
+
+    /* ── Context Cards ── */
+    .ctx-pane { display: none; }
+    .ctx-pane.active { display: block; }
+    .ctx-tui-banner { background: linear-gradient(135deg, #47277B 0%, #542E91 100%); color: white; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+    .ctx-tui-banner strong { font-size: 0.95rem; font-weight: 800; }
+    .ctx-tui-banner p { font-size: 0.8rem; opacity: 0.85; margin-top: 0.3rem; }
+    .ctx-headline { background: #eff6ff; border-radius: 10px; padding: 0.9rem 1.25rem; margin-bottom: 1.1rem; border-left: 4px solid #2A77B6; }
+    .ctx-headline p { font-size: 0.85rem; font-weight: 600; color: #2A77B6; }
+    .ctx-risk { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 0.9rem 1.25rem; margin-bottom: 1.1rem; display: flex; align-items: flex-start; gap: 0.75rem; }
+    .ctx-risk-badge { background: #BC5415; color: white; font-size: 0.62rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 0.25rem; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; margin-top: 0.15rem; }
+    .ctx-risk p { font-size: 0.82rem; color: #9a3412; font-weight: 600; line-height: 1.5; }
+    .ctx-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .ctx-card { background: #f8fafc; border-radius: 10px; padding: 1rem 1.2rem; border-left: 3px solid; }
+    .ctx-card-title { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+    .ctx-card ul { list-style: none; padding: 0; }
+    .ctx-card ul li { font-size: 0.78rem; color: #374151; padding: 0.22rem 0 0.22rem 1rem; position: relative; line-height: 1.45; border-bottom: 1px solid #f1f5f9; }
+    .ctx-card ul li:last-child { border-bottom: none; }
+    .ctx-card ul li::before { content: '–'; position: absolute; left: 0; color: #9ca3af; font-weight: 700; }
+    .ctx-full-width { grid-column: 1 / -1; }
+
+    /* ── GP Bridge ── */
+    .bridge-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
+    .bridge-kpi { background: white; border-radius: 14px; padding: 1.25rem 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); cursor: pointer; border-top: 4px solid; transition: box-shadow 0.15s, transform 0.15s; position: relative; }
+    .bridge-kpi:hover, .bridge-kpi.open { box-shadow: 0 4px 18px rgba(0,0,0,0.13); transform: translateY(-2px); }
+    .bridge-kpi-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; margin-bottom: 0.3rem; }
+    .bridge-kpi-change { font-size: 1.3rem; font-weight: 900; margin-bottom: 0.2rem; }
+    .bridge-kpi-vals { font-size: 0.75rem; color: #9ca3af; }
+    .bridge-kpi-impact { font-size: 0.7rem; font-weight: 700; margin-top: 0.5rem; display: inline-block; padding: 0.18rem 0.5rem; border-radius: 1rem; }
+    .bridge-kpi-impact.pos { background: #dcfce7; color: #15803d; }
+    .bridge-kpi-impact.neg { background: #fff7ed; color: #c2410c; }
+    .bridge-kpi-cta { margin-top: 0.85rem; padding-top: 0.6rem; border-top: 1px solid #f1f5f9; display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; font-weight: 700; color: #9ca3af; transition: color 0.15s; }
+    .bridge-kpi:hover .bridge-kpi-cta { color: #6b7280; }
+    .bridge-kpi.open .bridge-kpi-cta { color: #374151; }
+    .bridge-kpi-cta-icon { font-size: 0.75rem; display: inline-block; transition: transform 0.2s; line-height: 1; }
+    .bridge-kpi.open .bridge-kpi-cta-icon { transform: rotate(180deg); }
+    .bridge-kpi-cta-open { display: none; }
+    .bridge-kpi.open .bridge-kpi-cta-close { display: none; }
+    .bridge-kpi.open .bridge-kpi-cta-open { display: inline; }
+    .bridge-panel { background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.09); margin-bottom: 1.25rem; overflow: hidden; border-left: 5px solid; display: none; }
+    .bridge-panel.visible { display: block; }
+    .bridge-panel-header { padding: 1rem 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
+    .bridge-panel-header h3 { font-size: 1rem; font-weight: 800; }
+    .bridge-panel-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.5rem; }
+    .bridge-context h4 { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #9ca3af; margin-bottom: 0.75rem; }
+    .bridge-context-list { list-style: none; padding: 0; }
+    .bridge-context-list li { font-size: 0.8rem; color: #374151; padding: 0.32rem 0 0.32rem 1.1rem; position: relative; line-height: 1.5; border-bottom: 1px solid #f1f5f9; }
+    .bridge-context-list li:last-child { border-bottom: none; }
+    .bridge-context-list li::before { content: '→'; position: absolute; left: 0; color: #cbd5e1; font-size: 0.7rem; top: 0.38rem; }
+    .bridge-impact { margin-top: 1rem; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+    .bridge-impact.pos { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .bridge-impact.neg { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+
+    /* ── Region Navigation ── */
+    .region-nav { display: flex; gap: 0.5rem; margin-bottom: 2rem; background: white; border-radius: 14px; padding: 0.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+    .region-btn { padding: 0.65rem 2rem; border-radius: 10px; font-size: 0.875rem; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #6b7280; transition: all 0.15s; }
+    .region-btn:hover { background: #f0f4f8; color: #0d1f3c; }
+    .region-btn.active { background: #542E91; color: white; }
+    .region-btn.eu-active { background: linear-gradient(135deg, #D9313A, #542E91) !important; color: white !important; }
+
+    /* ── Combined Banner ── */
+    .combined-banner { background: linear-gradient(135deg, #3a1f6b 0%, #542E91 60%, #47277B 100%); color: white; border-radius: 16px; padding: 2rem 2.5rem; margin-bottom: 2rem; }
+    .combined-banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .combined-banner-title { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; }
+    .combined-banner-pill { font-size: 0.72rem; font-weight: 700; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); padding: 0.3rem 0.85rem; border-radius: 2rem; opacity: 0.8; }
+    .combined-kpi-row { display: flex; align-items: flex-start; }
+    .combined-kpi-cell { flex: 1; padding: 0 1.75rem; }
+    .combined-kpi-cell:first-child { padding-left: 0; }
+    .combined-kpi-cell:last-child { padding-right: 0; }
+    .combined-kpi-divider { width: 1px; background: rgba(255,255,255,0.18); align-self: stretch; flex-shrink: 0; }
+    .combined-kpi-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; opacity: 0.55; margin-bottom: 0.35rem; }
+    .combined-kpi-val { font-size: 2rem; font-weight: 900; line-height: 1; }
+    .combined-kpi-context { margin-top: 0.45rem; display: flex; flex-direction: column; gap: 0.12rem; }
+    .combined-kpi-ly-val { font-size: 0.72rem; opacity: 0.5; }
+    .combined-kpi-delta { font-size: 0.78rem; font-weight: 700; }
+    .combined-gp-bar-wrap { margin: 1.5rem 0 0; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.12); display: flex; overflow: hidden; gap: 2px; }
+    .combined-gp-bar-uk { background: #FDD506; border-radius: 3px 0 0 3px; }
+    .combined-gp-bar-eu { background: #D9313A; }
+    .combined-gp-bar-ins { background: #2A77B6; border-radius: 0 3px 3px 0; }
+    .combined-gp-legend { display: flex; gap: 1.75rem; margin-top: 0.65rem; flex-wrap: wrap; }
+    .combined-gp-legend-item { display: flex; align-items: center; gap: 0.45rem; }
+    .combined-gp-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .combined-gp-legend-name { font-size: 0.67rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.65; }
+    .combined-gp-legend-share { font-size: 0.72rem; font-weight: 800; }
+    .combined-gp-legend-ly { font-size: 0.65rem; opacity: 0.45; margin-left: 0.1rem; }
+    .combined-gp-legend-delta { font-size: 0.65rem; font-weight: 700; margin-left: 0.1rem; }
+    .combined-split { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; margin-top: 0.75rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.15); }
+    .combined-split-block { padding: 0 1.5rem; border-left: 1px solid rgba(255,255,255,0.15); }
+    .combined-split-block:first-child { padding-left: 0; border-left: none; }
+    .combined-split-block:last-child { padding-right: 0; }
+    .combined-split-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+    .combined-split-label-text { opacity: 0.55; }
+    .combined-split-share { font-size: 0.68rem; font-weight: 700; background: rgba(255,255,255,0.15); padding: 0.15rem 0.5rem; border-radius: 1rem; opacity: 0.9; }
+    .combined-split-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    .combined-split-metric-val { font-size: 1.2rem; font-weight: 800; }
+    .combined-split-metric-lbl { font-size: 0.68rem; opacity: 0.55; margin-top: 0.1rem; }
+    .combined-split-change { font-size: 0.72rem; font-weight: 700; margin-top: 0.2rem; }
+    .change-pos { color: #4ade80; }
+    .change-neg { color: #f87171; }
+
+    /* ── Section visibility ── */
+    #ukSections { display: block; }
+    #euSections { display: none; }
+    #insuranceSections { display: none; }
+    .region-btn.ins-active { background: linear-gradient(135deg, #24659B, #2A77B6) !important; color: white !important; }
+    .dist-table .gp-row td { background: #f0fdf4; font-weight: 800; color: #15803d; }
+
+    /* ── EU Page ── */
+    .eu-header-banner { background: linear-gradient(135deg, #B82A31 0%, #542E91 100%); color: white; border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .eu-header-banner h2 { font-size: 1.5rem; font-weight: 800; }
+    .eu-header-banner p { font-size: 0.85rem; opacity: 0.75; margin-top: 0.25rem; }
+    .eu-header-stats { display: flex; gap: 2rem; }
+    .eu-header-stat-val { font-size: 1.4rem; font-weight: 800; text-align: right; }
+    .eu-header-stat-lbl { font-size: 0.7rem; opacity: 0.65; text-align: right; margin-top: 0.15rem; }
+
+    /* EU region tabs */
+    .eu-region-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .eu-region-btn { padding: 0.5rem 1.5rem; border-radius: 2rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; border: 2px solid #e5e7eb; background: white; color: #6b7280; transition: all 0.15s; }
+    .eu-region-btn:hover { border-color: #D9313A; color: #D9313A; }
+    .eu-region-btn.active { color: white; border-color: transparent; }
+    .eu-region-pane { display: none; }
+    .eu-region-pane.active { display: block; }
+
+    /* EU warning/risk card */
+    .eu-warning { background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #BC5415; border-radius: 10px; padding: 0.9rem 1.25rem; margin-bottom: 1rem; display: flex; gap: 0.75rem; align-items: flex-start; }
+    .eu-warning-badge { background: #BC5415; color: white; font-size: 0.62rem; font-weight: 800; padding: 0.18rem 0.5rem; border-radius: 0.25rem; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; margin-top: 0.1rem; }
+    .eu-warning p { font-size: 0.82rem; color: #9a3412; font-weight: 600; line-height: 1.5; }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .ctx-grid { grid-template-columns: repeat(2, 1fr); }
+      .bridge-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .bridge-panel-inner { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      .header { padding: 1.5rem 1rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr 1fr; }
+      .growth-banner-inner { flex-direction: column; }
+      .growth-stats { flex-wrap: wrap; gap: 1rem; }
+      .tab-pane.active { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>FY27 Budget</h1>
+    <p>UK Distribution · Internal — For employee use only</p>
+  </div>
+  <div class="header-right">
+    <span class="badge">FY27</span>
+    <span class="badge">UK Distribution</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══ COMBINED BANNER ═══ -->
+  <div class="combined-banner">
+    <div class="combined-banner-top">
+      <div class="combined-banner-title">FY27 Budget — Combined Overview</div>
+      <div class="combined-banner-pill">UK Distribution + European Markets + Insurance</div>
+    </div>
+    <div class="combined-kpi-row">
+      <div class="combined-kpi-cell">
+        <div class="combined-kpi-label">Total Policies / Bookings</div>
+        <div class="combined-kpi-val">6.10m</div>
+        <div class="combined-kpi-context">
+          <span class="combined-kpi-ly-val">LY 5.89m</span>
+          <span class="combined-kpi-delta change-pos">+211k &nbsp;·&nbsp; +3.6%</span>
+        </div>
+      </div>
+      <div class="combined-kpi-divider"></div>
+      <div class="combined-kpi-cell">
+        <div class="combined-kpi-label">Combined Revenue</div>
+        <div class="combined-kpi-val">£600.4m</div>
+        <div class="combined-kpi-context">
+          <span class="combined-kpi-ly-val">LY £572.0m</span>
+          <span class="combined-kpi-delta change-pos">+£28.4m &nbsp;·&nbsp; +5.0%</span>
+        </div>
+      </div>
+      <div class="combined-kpi-divider"></div>
+      <div class="combined-kpi-cell">
+        <div class="combined-kpi-label">Combined Gross Profit</div>
+        <div class="combined-kpi-val">£75.5m</div>
+        <div class="combined-kpi-context">
+          <span class="combined-kpi-ly-val">LY £69.9m</span>
+          <span class="combined-kpi-delta change-pos">+£5.6m &nbsp;·&nbsp; +8.0%</span>
+        </div>
+      </div>
+    </div>
+    <div class="combined-gp-bar-wrap">
+      <div class="combined-gp-bar-uk" style="width:77.8%"></div>
+      <div class="combined-gp-bar-eu" style="width:13.4%"></div>
+      <div class="combined-gp-bar-ins" style="width:8.8%"></div>
+    </div>
+    <div class="combined-gp-legend">
+      <div class="combined-gp-legend-item">
+        <div class="combined-gp-legend-dot" style="background:#FDD506"></div>
+        <span class="combined-gp-legend-name">UK</span>
+        <span class="combined-gp-legend-share">77.8%</span>
+        <span class="combined-gp-legend-ly">LY 77.6%</span>
+        <span class="combined-gp-legend-delta change-pos">+0.2pp</span>
+      </div>
+      <div class="combined-gp-legend-item">
+        <div class="combined-gp-legend-dot" style="background:#D9313A"></div>
+        <span class="combined-gp-legend-name">EU</span>
+        <span class="combined-gp-legend-share">13.4%</span>
+        <span class="combined-gp-legend-ly">LY 13.6%</span>
+        <span class="combined-gp-legend-delta change-neg">−0.2pp</span>
+      </div>
+      <div class="combined-gp-legend-item">
+        <div class="combined-gp-legend-dot" style="background:#2A77B6"></div>
+        <span class="combined-gp-legend-name">Insurance</span>
+        <span class="combined-gp-legend-share">8.8%</span>
+        <span class="combined-gp-legend-ly">LY 8.8%</span>
+        <span class="combined-gp-legend-delta" style="opacity:0.4">flat</span>
+      </div>
+    </div>
+    <div class="combined-split">
+      <div class="combined-split-block">
+        <div class="combined-split-label">
+          <span class="combined-split-label-text">UK Distribution</span>
+          <span class="combined-split-share" style="background:rgba(253,213,6,0.18);border:1px solid rgba(253,213,6,0.35)">77.8% of GP</span>
+        </div>
+        <div class="combined-split-metrics">
+          <div>
+            <div class="combined-split-metric-val">4.74m</div>
+            <div class="combined-split-metric-lbl">Bookings</div>
+            <div class="combined-split-change change-pos">+84k &nbsp;·&nbsp; +1.8%</div>
+          </div>
+          <div>
+            <div class="combined-split-metric-val">£468.4m</div>
+            <div class="combined-split-metric-lbl">Revenue</div>
+            <div class="combined-split-change change-pos">+£15.3m &nbsp;·&nbsp; +3.4%</div>
+          </div>
+          <div>
+            <div class="combined-split-metric-val">£58.7m</div>
+            <div class="combined-split-metric-lbl">Gross Profit</div>
+            <div class="combined-split-change change-pos">+£4.5m &nbsp;·&nbsp; +8.3%</div>
+          </div>
+        </div>
+      </div>
+      <div class="combined-split-block">
+        <div class="combined-split-label">
+          <span class="combined-split-label-text">European Markets</span>
+          <span class="combined-split-share">13.4% of GP</span>
+        </div>
+        <div class="combined-split-metrics">
+          <div>
+            <div class="combined-split-metric-val">1.04m</div>
+            <div class="combined-split-metric-lbl">Bookings</div>
+            <div class="combined-split-change change-pos">+95k &nbsp;·&nbsp; +10.0%</div>
+          </div>
+          <div>
+            <div class="combined-split-metric-val">£100.0m</div>
+            <div class="combined-split-metric-lbl">Revenue</div>
+            <div class="combined-split-change change-pos">+£9.9m &nbsp;·&nbsp; +11.0%</div>
+          </div>
+          <div>
+            <div class="combined-split-metric-val">£10.1m</div>
+            <div class="combined-split-metric-lbl">Gross Profit</div>
+            <div class="combined-split-change change-pos">+£605k &nbsp;·&nbsp; +6.4%</div>
+          </div>
+        </div>
+      </div>
+      <div class="combined-split-block">
+        <div class="combined-split-label">
+          <span class="combined-split-label-text">Insurance</span>
+          <span class="combined-split-share">8.8% of GP</span>
+        </div>
+        <div class="combined-split-metrics">
+          <div>
+            <div class="combined-split-metric-val">324k</div>
+            <div class="combined-split-metric-lbl">Policies</div>
+            <div class="combined-split-change change-pos">+31k &nbsp;·&nbsp; +10.7%</div>
+          </div>
+          <div>
+            <div class="combined-split-metric-val">£32.0m</div>
+            <div class="combined-split-metric-lbl">Revenue</div>
+            <div class="combined-split-change change-pos">+£3.2m &nbsp;·&nbsp; +11.0%</div>
+          </div>
+          <div>
+            <div class="combined-split-metric-val">£6.6m</div>
+            <div class="combined-split-metric-lbl">Gross Profit</div>
+            <div class="combined-split-change change-pos">+£472k &nbsp;·&nbsp; +7.7%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REGION NAV ═══ -->
+  <div class="region-nav">
+    <button class="region-btn active" id="btnUK" onclick="switchRegion('uk')">UK Distribution</button>
+    <button class="region-btn" id="btnEU" onclick="switchRegion('eu')">European Markets</button>
+    <button class="region-btn" id="btnIns" onclick="switchRegion('insurance')">Insurance</button>
+  </div>
+
+  <div id="ukSections">
+
+  <!-- ═══ SECTION 1: HEADLINE KPIs ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Overall Budget at a Glance</span>
+      <span class="section-sub">FY27 Budget vs Last Year</span>
+    </div>
+    <div class="grid-4">
+      <div class="kpi-card" style="border-color:#FDD506">
+        <div class="kpi-label">Total Bookings</div>
+        <div class="kpi-value">4.74m</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY 4.65m</span>
+          <span class="kpi-abs">+84k</span>
+          <span class="pill up">+1.8%</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:#2A77B6">
+        <div class="kpi-label">Revenue (incl. VAT)</div>
+        <div class="kpi-value">£468.4m</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY £453.1m</span>
+          <span class="kpi-abs">+£15.3m</span>
+          <span class="pill up">+3.4%</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:#542E91">
+        <div class="kpi-label">Gross Margin (excl. VAT)</div>
+        <div class="kpi-value">16.6%</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY 16.1%</span>
+          <span class="pill up">+52bps</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:#347E7A">
+        <div class="kpi-label">Gross Profit (excl. VAT)</div>
+        <div class="kpi-value">£58.7m</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY £54.3m</span>
+          <span class="kpi-abs">+£4.5m</span>
+          <span class="pill up">+8.3%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2: GROWTH VS LY ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Budget Growth vs Last Year</span>
+      <span class="section-sub">Gross Profit (excl. VAT)</span>
+    </div>
+
+    <div class="growth-banner">
+      <div class="growth-banner-inner">
+        <div>
+          <h2>Total GP Growth</h2>
+          <div class="big-number">+£4.5m</div>
+          <div class="big-label">+8.3% vs Last Year · £54.3m → £58.7m</div>
+        </div>
+        <div class="growth-stats">
+          <div class="growth-stat">
+            <div class="growth-stat-val">+£15.3m</div>
+            <div class="growth-stat-lbl">Revenue growth</div>
+          </div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat">
+            <div class="growth-stat-val">+83k</div>
+            <div class="growth-stat-lbl">More bookings</div>
+          </div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat">
+            <div class="growth-stat-val">+52bps</div>
+            <div class="growth-stat-lbl">GM% improvement</div>
+          </div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat">
+            <div class="growth-stat-val">£11.01</div>
+            <div class="growth-stat-lbl">GP per booking</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top contributors -->
+    <div class="grid-3" style="margin-bottom:1.5rem">
+      <div class="contributor-card" style="border-color:#2A77B6">
+        <div class="contributor-rank">#1 Contributor</div>
+        <div class="contributor-name">Parking</div>
+        <div class="contributor-amount" style="color:#2A77B6">+£3.0m</div>
+        <div class="contributor-pct">67% of total GP growth</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:67%;background:#2A77B6"></div></div>
+      </div>
+      <div class="contributor-card" style="border-color:#347E7A">
+        <div class="contributor-rank">#2 Contributor</div>
+        <div class="contributor-name">Hotels</div>
+        <div class="contributor-amount" style="color:#347E7A">+£1.1m</div>
+        <div class="contributor-pct">24.8% of total GP growth</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:24.8%;background:#347E7A"></div></div>
+      </div>
+      <div class="contributor-card" style="border-color:#D9313A">
+        <div class="contributor-rank">#3 Contributor</div>
+        <div class="contributor-name">Transfers</div>
+        <div class="contributor-amount" style="color:#D9313A">+£190k</div>
+        <div class="contributor-pct">16.2% growth rate — fastest growing</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:4.2%;background:#D9313A"></div></div>
+      </div>
+    </div>
+
+    <!-- GP Growth Chart -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Gross Profit Growth by Product (£)</div>
+        <div style="height:260px"><canvas id="gpGrowthChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revenue Growth by Product (£)</div>
+        <div style="height:260px"><canvas id="revGrowthChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 2.5: GP BRIDGE ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">GP Bridge — How We Get There</span>
+      <span class="section-sub">Key drivers bridging £54.3m LY to £58.7m Budget · click each driver to explore</span>
+    </div>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title">Gross Profit Bridge — Estimated Driver Contributions (£m)</div>
+      <div style="height:290px"><canvas id="bridgeChart"></canvas></div>
+    </div>
+    <div class="bridge-kpi-grid" id="bridgeKpiGrid"></div>
+    <div id="bridgePanels"></div>
+  </div>
+
+  <!-- ═══ SECTION 4: DISTRIBUTION BUDGET (Commission + PPC) ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Distribution Budget</span>
+      <span class="section-sub">Commission &amp; PPC investment — how we plan to drive bookings</span>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="kpi-card" style="border-color:#542E91">
+        <div class="kpi-label">Total Distribution Spend</div>
+        <div class="kpi-value">£21.3m</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY £21.4m</span>
+          <span class="pill down">-0.5%</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:#2A77B6">
+        <div class="kpi-label">Commission Budget</div>
+        <div class="kpi-value">£11.2m</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY £11.3m</span>
+          <span class="pill down">-1.4%</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:#FDD506">
+        <div class="kpi-label">PPC Budget</div>
+        <div class="kpi-value">£10.1m</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY £10.0m</span>
+          <span class="pill up">+0.4%</span>
+        </div>
+      </div>
+      <div class="kpi-card" style="border-color:#347E7A">
+        <div class="kpi-label">Distribution % of Revenue</div>
+        <div class="kpi-value">4.54%</div>
+        <div class="kpi-row">
+          <span class="kpi-ly">LY 4.72%</span>
+          <span class="pill up">-18bps</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Distribution Spend by Product — Budget (£)</div>
+        <div style="height:270px"><canvas id="distChart"></canvas></div>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <div class="card-title">Distribution Budget Detail by Product</div>
+        <table class="dist-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Commission LY</th>
+              <th>Commission Bud</th>
+              <th>PPC LY</th>
+              <th>PPC Bud</th>
+              <th>Total Dist Bud</th>
+              <th>Dist % Rev</th>
+            </tr>
+          </thead>
+          <tbody id="distDetailBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 5: PRODUCT BREAKDOWNS ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Product Breakdowns</span>
+      <span class="section-sub">Full P&amp;L by product — LY vs FY27 Budget</span>
+    </div>
+    <div class="tabs" id="productTabs"></div>
+    <div id="productPanes"></div>
+  </div>
+
+  <!-- ═══ SECTION 6: COMMERCIAL CONTEXT ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Commercial Context &amp; Assumptions</span>
+      <span class="section-sub">Site-level commercial updates — FY27 Budget</span>
+    </div>
+    <div class="tabs" id="ukCtxTabs">
+      <button class="tab-btn active" id="ukCtxBtnParking" onclick="switchUkCtx('parking',this)">Parking</button>
+      <button class="tab-btn" id="ukCtxBtnHotels" onclick="switchUkCtx('hotels',this)">Hotels</button>
+      <button class="tab-btn" id="ukCtxBtnLounges" onclick="switchUkCtx('lounges',this)">Lounges</button>
+    </div>
+    <div id="ukCtxParking">
+      <div class="bridge-kpi-grid" id="ukParkingGrid"></div>
+      <div id="ukParkingPanels"></div>
+    </div>
+    <div id="ukCtxHotels" style="display:none">
+      <div class="grid-2" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title">Bedstock Pipeline — New Hotels Coming to Market</div>
+          <table class="dist-table" id="hotBedstockTable">
+            <thead><tr>
+              <th style="text-align:left">Airport</th>
+              <th style="text-align:left">Hotel</th>
+              <th>Beds</th>
+              <th>Go Live</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>Aberdeen</td><td>Travelodge Aberdeen Airport</td><td>40</td><td>FY26/27</td></tr>
+              <tr><td>Birmingham</td><td>Travelodge Birmingham Airport</td><td>200</td><td>FY26/27</td></tr>
+              <tr><td>Cardiff</td><td>Travelodge Cardiff Airport</td><td>28</td><td>FY26/27</td></tr>
+              <tr><td>Edinburgh</td><td>Travelodge Edinburgh Airport Ratho Station</td><td>97</td><td>FY26/27</td></tr>
+              <tr><td>Gatwick</td><td>Travelodge Gatwick Airport Central</td><td>400</td><td>FY26/27</td></tr>
+              <tr><td>Gatwick</td><td>BLOC</td><td>245</td><td>FY26/27</td></tr>
+              <tr><td>Leeds Bradford</td><td>Travelodge Leeds Bradford Airport</td><td>48</td><td>FY26/27</td></tr>
+              <tr><td>Liverpool</td><td>Travelodge Liverpool John Lennon Airport</td><td>100</td><td>FY26/27</td></tr>
+              <tr><td>Newcastle</td><td>Travelodge Newcastle Airport</td><td>30</td><td>FY26/27</td></tr>
+              <tr><td>East Midlands</td><td>Travelodge Nottingham EMA Donington Park M1</td><td>80</td><td>FY26/27</td></tr>
+              <tr><td>Heathrow</td><td>Novotel M4J4</td><td>178</td><td>FY26/27</td></tr>
+              <tr><td>Manchester</td><td>Dakota</td><td>154</td><td>FY26/27</td></tr>
+              <tr><td>Rest of Market</td><td>Travelodge Glasgow Airport</td><td>98</td><td>FY26/27</td></tr>
+              <tr><td>Rest of Market</td><td>Travelodge London City Airport</td><td>157</td><td>FY26/27</td></tr>
+              <tr><td>Manchester</td><td>Premier Inn Airport City</td><td>276</td><td>FY27/28</td></tr>
+              <tr><td>Gatwick</td><td>Effingham</td><td>120</td><td>FY28/29</td></tr>
+              <tr><td>Heathrow</td><td>Holiday Inn M4J4</td><td>616</td><td>FY28/29</td></tr>
+              <tr><td>Manchester</td><td>Courtyard</td><td>250</td><td>FY28/29</td></tr>
+              <tr><td>Rest of Market</td><td>Travelodge Cork Airport</td><td>60</td><td>FY28/29</td></tr>
+              <tr><td>Rest of Market</td><td>Travelodge Dublin Airport North (Swords)</td><td>130</td><td>FY28/29</td></tr>
+              <tr><td>Rest of Market</td><td>Travelodge Dublin Airport South</td><td>125</td><td>FY28/29</td></tr>
+              <tr><td>Rest of Market</td><td>Hilton, Crowne Plaza, Holiday Inn Express, Premier Inn</td><td>700</td><td>FY28/29</td></tr>
+              <tr><td>Manchester</td><td>Hampton by Hilton</td><td>254</td><td>FY30/31</td></tr>
+              <tr><td>Manchester</td><td>Hilton Garden Inn</td><td>375</td><td>FY30/31</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title">Additional Bookings from Bedstock — 2% Utilisation Assumed</div>
+          <table class="dist-table">
+            <thead><tr>
+              <th style="text-align:left">Airport</th>
+              <th>FY26/27</th><th>FY27/28</th><th>FY28/29</th><th>FY29/30</th><th>FY30/31</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>Birmingham</td><td>850</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>Cardiff</td><td>204</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>East Midlands</td><td>354</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>Edinburgh</td><td>708</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>Gatwick</td><td>2,530</td><td>—</td><td>876</td><td>—</td><td>—</td></tr>
+              <tr><td>Heathrow</td><td>1,299</td><td>—</td><td>4,497</td><td>—</td><td>—</td></tr>
+              <tr><td>Leeds Bradford</td><td>350</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>Liverpool</td><td>730</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>Manchester</td><td>1,124</td><td>2,014</td><td>1,825</td><td>—</td><td>4,592</td></tr>
+              <tr><td>Newcastle</td><td>219</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td>Rest of Market</td><td>2,154</td><td>—</td><td>7,410</td><td>—</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="ukCtxLounges" style="display:none">
+      <div class="card">
+        <div class="card-title">Lounges — Commercial Context &amp; Assumptions</div>
+        <ul class="bridge-context-list" style="margin-top:0.75rem">
+          <li><strong>Bristol (BRS) &amp; Manchester (MAN):</strong> Volume modelled between 2025 and 2024 actuals for FY26/27, with small price deflation expected due to new lounges and API. No change to margin at present.</li>
+          <li><strong>Heathrow (LHR), Gatwick (LGW) &amp; Birmingham (BHX):</strong> Small volume growth for FY26/27 with flat pricing — No.1 Lounge Integration driving incremental uplift.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /ukSections -->
+
+  <!-- ═══ EU SECTIONS ═══ -->
+  <div id="euSections">
+
+  <!-- ═══ EU SECTION 1: KPI CARDS ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#D9313A">European Markets — Budget at a Glance</span>
+      <span class="section-sub">FY27 Budget vs Last Year · DACH · BENELUX · Emerging</span>
+    </div>
+    <div class="grid-4">
+      <div class="kpi-card" style="border-color:#FDD506">
+        <div class="kpi-label">EU Bookings</div>
+        <div class="kpi-value">1.04m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY 944k</span><span class="kpi-abs">+95k</span><span class="pill up">+10.0%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#D9313A">
+        <div class="kpi-label">EU Revenue (incl. VAT)</div>
+        <div class="kpi-value">£100.0m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £90.1m</span><span class="kpi-abs">+£9.9m</span><span class="pill up">+11.0%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#347E7A">
+        <div class="kpi-label">EU GM% (excl. VAT)</div>
+        <div class="kpi-value">20.93%</div>
+        <div class="kpi-row"><span class="kpi-ly">LY 20.77%</span><span class="pill up">+16bps</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#542E91">
+        <div class="kpi-label">EU Gross Profit (excl. VAT)</div>
+        <div class="kpi-value">£10.1m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £9.5m</span><span class="kpi-abs">+£605k</span><span class="pill up">+6.4%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EU SECTION 2: GROWTH vs LY ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#D9313A">Budget Growth vs Last Year</span>
+      <span class="section-sub">Gross Profit (excl. VAT)</span>
+    </div>
+    <div class="growth-banner" style="background:linear-gradient(135deg,#3a1f6b 0%,#542E91 100%);margin-bottom:1.5rem">
+      <div class="growth-banner-inner">
+        <div>
+          <h2>EU GP Growth</h2>
+          <div class="big-number">+£605k</div>
+          <div class="big-label">+6.4% vs Last Year · £9.52m → £10.12m</div>
+        </div>
+        <div class="growth-stats">
+          <div class="growth-stat"><div class="growth-stat-val">+95k</div><div class="growth-stat-lbl">More bookings</div></div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat"><div class="growth-stat-val">+£9.9m</div><div class="growth-stat-lbl">Revenue growth</div></div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat"><div class="growth-stat-val">+16bps</div><div class="growth-stat-lbl">GM% improvement</div></div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat"><div class="growth-stat-val">+£1.6m</div><div class="growth-stat-lbl">Distribution invest.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-bottom:1.5rem">
+      <div class="contributor-card" style="border-color:#D9313A">
+        <div class="contributor-rank">#1 Contributor</div>
+        <div class="contributor-name">DACH</div>
+        <div class="contributor-amount" style="color:#D9313A">+£565k</div>
+        <div class="contributor-pct">93.4% of total EU GP growth</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:93%;background:#D9313A"></div></div>
+      </div>
+      <div class="contributor-card" style="border-color:#347E7A">
+        <div class="contributor-rank">#2 Contributor</div>
+        <div class="contributor-name">Emerging</div>
+        <div class="contributor-amount" style="color:#347E7A">+£85k</div>
+        <div class="contributor-pct">+46.3% growth — fastest growing region</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:14%;background:#347E7A"></div></div>
+      </div>
+      <div class="contributor-card" style="border-color:#D9313A">
+        <div class="contributor-rank">Headwind</div>
+        <div class="contributor-name">BENELUX</div>
+        <div class="contributor-amount" style="color:#B82A31">−£44k</div>
+        <div class="contributor-pct">QP commission/PPC investment compressing GP</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:7%;background:#D9313A"></div></div>
+      </div>
+    </div>
+    <div class="eu-warning" style="margin-bottom:1.5rem">
+      <span class="eu-warning-badge">Note</span>
+      <p>EU GP growth (+6.4%) is held back by significant distribution investment: commission rising +26% (£4.0m → £5.1m) and PPC up +10.7% (£5.2m → £5.7m). Revenue growth of +11% and margin improvement of +16bps are the underlying positive drivers — EU is deliberately in "invest for growth" mode.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Gross Profit Growth by Region (£)</div>
+        <div style="height:260px"><canvas id="euGpGrowthChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revenue Growth by Region (£)</div>
+        <div style="height:260px"><canvas id="euRevGrowthChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EU SECTION 3: GP BRIDGE ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#D9313A">EU GP Bridge — How We Get There</span>
+      <span class="section-sub">Key drivers bridging £9.52m LY to £10.12m Budget · click each driver to explore</span>
+    </div>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title">EU Gross Profit Bridge — Estimated Driver Contributions (£m)</div>
+      <div style="height:290px"><canvas id="euBridgeChart"></canvas></div>
+    </div>
+    <div class="bridge-kpi-grid" id="euBridgeKpiGrid"></div>
+    <div id="euBridgePanels"></div>
+  </div>
+
+  <!-- ═══ EU SECTION 5: DISTRIBUTION BUDGET ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#D9313A">EU Distribution Budget</span>
+      <span class="section-sub">Commission &amp; PPC investment — EU is in "invest for growth" mode</span>
+    </div>
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="kpi-card" style="border-color:#542E91">
+        <div class="kpi-label">Total EU Distribution Spend</div>
+        <div class="kpi-value">£10.8m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £9.2m</span><span class="kpi-abs">+£1.6m</span><span class="pill down">+17.5%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#D9313A">
+        <div class="kpi-label">EU Commission Budget</div>
+        <div class="kpi-value">£5.1m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £4.0m</span><span class="kpi-abs">+£1.1m</span><span class="pill down">+26.3%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#FDD506">
+        <div class="kpi-label">EU PPC Budget</div>
+        <div class="kpi-value">£5.7m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £5.2m</span><span class="kpi-abs">+£551k</span><span class="pill down">+10.7%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#347E7A">
+        <div class="kpi-label">EU Distribution % of Revenue</div>
+        <div class="kpi-value">10.81%</div>
+        <div class="kpi-row"><span class="kpi-ly">LY 10.20%</span><span class="pill down">+61bps</span></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">EU Distribution Spend by Region — Budget (£)</div>
+        <div style="height:270px"><canvas id="euDistSpendChart"></canvas></div>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <div class="card-title">EU Distribution Budget Detail by Region</div>
+        <table class="dist-table">
+          <thead>
+            <tr>
+              <th>Region</th>
+              <th>Commission LY</th><th>Commission Bud</th>
+              <th>PPC LY</th><th>PPC Bud</th>
+              <th>Total Dist Bud</th><th>Dist % Rev</th>
+            </tr>
+          </thead>
+          <tbody id="euDistDetailBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EU SECTION 6: REGION BREAKDOWNS ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#D9313A">Region Breakdowns</span>
+      <span class="section-sub">Full P&amp;L by region — LY vs FY27 Budget</span>
+    </div>
+    <div class="tabs eu-region-tabs" id="euRegionTabs">
+      <button class="eu-region-btn active" style="background:#D9313A;border-color:#D9313A" onclick="switchEuRegion('dach',this,'#D9313A')">DACH</button>
+      <button class="eu-region-btn" onclick="switchEuRegion('benelux',this,'#542E91')">BENELUX</button>
+      <button class="eu-region-btn" onclick="switchEuRegion('emerging',this,'#347E7A')">Emerging</button>
+    </div>
+    <!-- DACH -->
+    <div class="eu-region-pane active" id="eu-pane-dach">
+      <div class="tab-pane-top" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title" style="border-left:4px solid #D9313A;padding-left:.75rem">DACH — Full P&amp;L by Product</div>
+          <table class="dist-table" id="dachTable"></table>
+        </div>
+        <div class="card" id="eu-kpi-dach">
+          <div class="card-title" style="border-left:4px solid #D9313A;padding-left:.75rem">DACH — Key KPIs</div>
+        </div>
+      </div>
+    </div>
+    <!-- BENELUX -->
+    <div class="eu-region-pane" id="eu-pane-benelux">
+      <div class="eu-warning">
+        <span class="eu-warning-badge">Headwind</span>
+        <p>BENELUX GP declines −3.5% vs LY. Quick Parking Amsterdam (−£72k) and Brussels (−£36k) drive the drag as commission and PPC investment ramps up on these sites faster than revenue grows. BENELUX Parking (excl. QP) and Hotels are both growing positively.</p>
+      </div>
+      <div class="tab-pane-top" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title" style="border-left:4px solid #542E91;padding-left:.75rem">BENELUX — Full P&amp;L by Product</div>
+          <table class="dist-table" id="beneluxTable"></table>
+        </div>
+        <div class="card" id="eu-kpi-benelux">
+          <div class="card-title" style="border-left:4px solid #542E91;padding-left:.75rem">BENELUX — Key KPIs</div>
+        </div>
+      </div>
+    </div>
+    <!-- EMERGING -->
+    <div class="eu-region-pane" id="eu-pane-emerging">
+      <div class="tab-pane-top" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title" style="border-left:4px solid #347E7A;padding-left:.75rem">Emerging Markets — Full P&amp;L by Product</div>
+          <table class="dist-table" id="emergingTable"></table>
+        </div>
+        <div class="card" id="eu-kpi-emerging">
+          <div class="card-title" style="border-left:4px solid #347E7A;padding-left:.75rem">Emerging — Key KPIs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /euSections -->
+
+  <div id="insuranceSections">
+
+  <!-- ═══ INS SECTION 1: KPI CARDS ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#2A77B6">Insurance — Budget at a Glance</span>
+      <span class="section-sub">FY27 Budget vs Last Year · Direct · Partner Referral · Aggregator · Renewals</span>
+    </div>
+    <div class="grid-4">
+      <div class="kpi-card" style="border-color:#FDD506">
+        <div class="kpi-label">Total Policies</div>
+        <div class="kpi-value">324k</div>
+        <div class="kpi-row"><span class="kpi-ly">LY 293k</span><span class="kpi-abs">+31k</span><span class="pill up">+10.7%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#2A77B6">
+        <div class="kpi-label">Insurance Revenue</div>
+        <div class="kpi-value">£32.0m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £28.8m</span><span class="kpi-abs">+£3.2m</span><span class="pill up">+11.0%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#347E7A">
+        <div class="kpi-label">GP Margin %</div>
+        <div class="kpi-value">20.7%</div>
+        <div class="kpi-row"><span class="kpi-ly">LY 21.3%</span><span class="pill down">−64bps</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#542E91">
+        <div class="kpi-label">Insurance Gross Profit</div>
+        <div class="kpi-value">£6.6m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £6.1m</span><span class="kpi-abs">+£472k</span><span class="pill up">+7.7%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ INS SECTION 2: GROWTH vs LY ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#2A77B6">Budget Growth vs Last Year</span>
+      <span class="section-sub">Gross Profit</span>
+    </div>
+    <div class="growth-banner" style="background:linear-gradient(135deg,#24659B 0%,#2A77B6 100%);margin-bottom:1.5rem">
+      <div class="growth-banner-inner">
+        <div>
+          <h2>Insurance GP Growth</h2>
+          <div class="big-number">+£472k</div>
+          <div class="big-label">+7.7% vs Last Year · £6.15m → £6.62m</div>
+        </div>
+        <div class="growth-stats">
+          <div class="growth-stat"><div class="growth-stat-val">+31k</div><div class="growth-stat-lbl">More policies</div></div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat"><div class="growth-stat-val">+£3.2m</div><div class="growth-stat-lbl">Revenue growth</div></div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat"><div class="growth-stat-val">−64bps</div><div class="growth-stat-lbl">GP margin</div></div>
+          <div class="growth-divider"></div>
+          <div class="growth-stat"><div class="growth-stat-val">+£180k</div><div class="growth-stat-lbl">Distribution invest.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-bottom:1.5rem">
+      <div class="contributor-card" style="border-color:#2A77B6">
+        <div class="contributor-rank">#1 Contributor</div>
+        <div class="contributor-name">Direct</div>
+        <div class="contributor-amount" style="color:#2A77B6">+£266k</div>
+        <div class="contributor-pct">56.3% of total Insurance GP growth</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:56%;background:#2A77B6"></div></div>
+      </div>
+      <div class="contributor-card" style="border-color:#542E91">
+        <div class="contributor-rank">#2 Contributor</div>
+        <div class="contributor-name">Renewals</div>
+        <div class="contributor-amount" style="color:#542E91">+£133k</div>
+        <div class="contributor-pct">28.2% of total Insurance GP growth</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:28%;background:#542E91"></div></div>
+      </div>
+      <div class="contributor-card" style="border-color:#347E7A">
+        <div class="contributor-rank">#3 Contributor</div>
+        <div class="contributor-name">Partner Referral</div>
+        <div class="contributor-amount" style="color:#347E7A">+£73k</div>
+        <div class="contributor-pct">15.5% of total Insurance GP growth</div>
+        <div class="contributor-share-bar"><div class="contributor-share-fill" style="width:16%;background:#347E7A"></div></div>
+      </div>
+    </div>
+    <div class="eu-warning" style="margin-bottom:1.5rem">
+      <span class="eu-warning-badge">Note</span>
+      <p>Aggregator GP is flat at −£136k (LY = Budget) — this channel generates negative gross profit but is retained as strategic infrastructure for partner relationships. The growth story is Direct (+£266k via wizard sessions &amp; PPC optimisation), Renewals (+£133k via improving renewal rates) and Partner Referral (+£73k via updated partner economics).</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Gross Profit Growth by Channel (£)</div>
+        <div style="height:260px"><canvas id="insGpGrowthChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revenue Growth by Channel (£)</div>
+        <div style="height:260px"><canvas id="insRevGrowthChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ INS SECTION 3: GP BRIDGE ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#2A77B6">Insurance GP Bridge — How We Get There</span>
+      <span class="section-sub">Key drivers bridging £6.15m LY to £6.62m Budget · click each driver to explore</span>
+    </div>
+    <div class="card" style="margin-bottom:1.5rem">
+      <div class="card-title">Insurance Gross Profit Bridge — Estimated Driver Contributions (£m)</div>
+      <div style="height:290px"><canvas id="insBridgeChart"></canvas></div>
+    </div>
+    <div class="bridge-kpi-grid" id="insBridgeKpiGrid"></div>
+    <div id="insBridgePanels"></div>
+  </div>
+
+  <!-- ═══ INS SECTION 4: DISTRIBUTION BUDGET ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#2A77B6">Insurance Distribution Budget</span>
+      <span class="section-sub">Commission &amp; PPC investment by channel</span>
+    </div>
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="kpi-card" style="border-color:#542E91">
+        <div class="kpi-label">Total Distribution Spend</div>
+        <div class="kpi-value">£3.2m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £3.0m</span><span class="kpi-abs">+£180k</span><span class="pill down">+5.9%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#D9313A">
+        <div class="kpi-label">Commission Budget</div>
+        <div class="kpi-value">£3.0m</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £2.9m</span><span class="kpi-abs">+£117k</span><span class="pill down">+4.1%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#FDD506">
+        <div class="kpi-label">PPC Budget</div>
+        <div class="kpi-value">£209k</div>
+        <div class="kpi-row"><span class="kpi-ly">LY £146k</span><span class="kpi-abs">+£63k</span><span class="pill down">+43.3%</span></div>
+      </div>
+      <div class="kpi-card" style="border-color:#347E7A">
+        <div class="kpi-label">Distribution % of Revenue</div>
+        <div class="kpi-value">10.01%</div>
+        <div class="kpi-row"><span class="kpi-ly">LY 10.49%</span><span class="pill up">−48bps</span></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Distribution Spend by Channel — Budget (£)</div>
+        <div style="height:270px"><canvas id="insDistSpendChart"></canvas></div>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <div class="card-title">Insurance Distribution Budget Detail by Channel</div>
+        <table class="dist-table">
+          <thead>
+            <tr>
+              <th>Channel</th>
+              <th>Commission LY</th><th>Commission Bud</th>
+              <th>PPC LY</th><th>PPC Bud</th>
+              <th>Total Dist Bud</th><th>Dist % Rev</th>
+            </tr>
+          </thead>
+          <tbody id="insDistDetailBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ INS SECTION 5: CHANNEL BREAKDOWNS ═══ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title" style="border-color:#2A77B6">Channel Breakdowns</span>
+      <span class="section-sub">Full P&amp;L by channel — LY vs FY27 Budget</span>
+    </div>
+    <div class="tabs eu-region-tabs" id="insChannelTabs">
+      <button class="eu-region-btn active" style="background:#2A77B6;border-color:#2A77B6" onclick="switchInsChannel('direct',this,'#2A77B6')">Direct</button>
+      <button class="eu-region-btn" onclick="switchInsChannel('partnerReferral',this,'#347E7A')">Partner Referral</button>
+      <button class="eu-region-btn" onclick="switchInsChannel('aggregator',this,'#BC5415')">Aggregator</button>
+      <button class="eu-region-btn" onclick="switchInsChannel('renewals',this,'#542E91')">Renewals</button>
+    </div>
+    <!-- Direct -->
+    <div class="eu-region-pane active" id="ins-pane-direct">
+      <div class="tab-pane-top" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title" style="border-left:4px solid #2A77B6;padding-left:.75rem">Direct — Full P&amp;L</div>
+          <table class="dist-table" id="insTableDirect"></table>
+        </div>
+        <div class="card" id="ins-kpi-direct">
+          <div class="card-title" style="border-left:4px solid #2A77B6;padding-left:.75rem">Direct — Key KPIs</div>
+        </div>
+      </div>
+    </div>
+    <!-- Partner Referral -->
+    <div class="eu-region-pane" id="ins-pane-partnerReferral">
+      <div class="tab-pane-top" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title" style="border-left:4px solid #347E7A;padding-left:.75rem">Partner Referral — Full P&amp;L</div>
+          <table class="dist-table" id="insTablePartnerReferral"></table>
+        </div>
+        <div class="card" id="ins-kpi-partnerReferral">
+          <div class="card-title" style="border-left:4px solid #347E7A;padding-left:.75rem">Partner Referral — Key KPIs</div>
+        </div>
+      </div>
+    </div>
+    <!-- Aggregator -->
+    <div class="eu-region-pane" id="ins-pane-aggregator">
+      <div class="eu-warning">
+        <span class="eu-warning-badge">Negative GP</span>
+        <p>Aggregator GP is −£136k for both LY and Budget — this channel generates negative gross profit. It is retained as strategic infrastructure: aggregator relationships support brand presence and provide future commercial negotiation leverage. No volume growth is budgeted for FY27.</p>
+      </div>
+      <div class="tab-pane-top" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title" style="border-left:4px solid #BC5415;padding-left:.75rem">Aggregator — Full P&amp;L</div>
+          <table class="dist-table" id="insTableAggregator"></table>
+        </div>
+        <div class="card" id="ins-kpi-aggregator">
+          <div class="card-title" style="border-left:4px solid #BC5415;padding-left:.75rem">Aggregator — Key KPIs</div>
+        </div>
+      </div>
+    </div>
+    <!-- Renewals -->
+    <div class="eu-region-pane" id="ins-pane-renewals">
+      <div class="tab-pane-top" style="margin-bottom:1.5rem">
+        <div class="card" style="overflow-x:auto">
+          <div class="card-title" style="border-left:4px solid #542E91;padding-left:.75rem">Renewals — Full P&amp;L</div>
+          <table class="dist-table" id="insTableRenewals"></table>
+        </div>
+        <div class="card" id="ins-kpi-renewals">
+          <div class="card-title" style="border-left:4px solid #542E91;padding-left:.75rem">Renewals — Key KPIs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /insuranceSections -->
+
+</div><!-- /container -->
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const PRODUCTS = [
+  { key: 'parking',   name: 'Parking',    color: '#2A77B6' },
+  { key: 'hotels',    name: 'Hotels',     color: '#347E7A' },
+  { key: 'lounges',   name: 'Lounges',    color: '#BC5415' },
+  { key: 'fastTrack', name: 'Fast Track', color: '#542E91' },
+  { key: 'transfers', name: 'Transfers',  color: '#D9313A' },
+  { key: 'carHire',   name: 'Car Hire',   color: '#2A77B6' }
+];
+
+const DATA = {
+  all:       { bookings:{ly:4651900,bud:4735900}, nights:{ly:28670200,bud:28984200}, price:{ly:483641100,bud:498133800}, discount:{ly:30582300,bud:29770000}, revenue:{ly:453068800,bud:468363800}, supplierRev:{ly:362302500,bud:372341200}, gmInclVAT:{ly:90766400,bud:96022600}, vat:{ly:15119400,bud:16000400}, gmExclVAT:{ly:75627000,bud:80022100}, commission:{ly:11342900,bud:11184300}, ppc:{ly:10045900,bud:10088500}, gp:{ly:54268100,bud:58749300} },
+  parking:   { bookings:{ly:3591900,bud:3625900}, nights:{ly:27600200,bud:27854200}, price:{ly:341111100,bud:347503800}, discount:{ly:22572300,bud:21660000}, revenue:{ly:318538800,bud:325843800}, supplierRev:{ly:257102500,bud:260981200}, gmInclVAT:{ly:61436400,bud:64862600}, vat:{ly:10239400,bud:10810400}, gmExclVAT:{ly:51197000,bud:54052100}, commission:{ly:7972900,bud:7804300}, ppc:{ly:6315900,bud:6338500}, gp:{ly:36908100,bud:39909300} },
+  hotels:    { bookings:{ly:530000,bud:550000}, nights:{ly:540000,bud:570000}, price:{ly:99850000,bud:104160000}, discount:{ly:5640000,bud:5610000}, revenue:{ly:94210000,bud:98550000}, supplierRev:{ly:71560000,bud:74710000}, gmInclVAT:{ly:22650000,bud:23840000}, vat:{ly:3770000,bud:3970000}, gmExclVAT:{ly:18870000,bud:19870000}, commission:{ly:2230000,bud:2100000}, ppc:{ly:3130000,bud:3140000}, gp:{ly:13520000,bud:14630000} },
+  lounges:   { bookings:{ly:230000,bud:240000}, nights:{ly:230000,bud:240000}, price:{ly:22230000,bud:23450000}, discount:{ly:1130000,bud:1140000}, revenue:{ly:21100000,bud:22310000}, supplierRev:{ly:16860000,bud:17780000}, gmInclVAT:{ly:4240000,bud:4530000}, vat:{ly:710000,bud:760000}, gmExclVAT:{ly:3530000,bud:3780000}, commission:{ly:700000,bud:750000}, ppc:{ly:350000,bud:350000}, gp:{ly:2490000,bud:2680000} },
+  fastTrack: { bookings:{ly:110000,bud:110000}, nights:{ly:110000,bud:110000}, price:{ly:1780000,bud:1740000}, discount:{ly:0,bud:0}, revenue:{ly:1780000,bud:1740000}, supplierRev:{ly:1470000,bud:1440000}, gmInclVAT:{ly:310000,bud:300000}, vat:{ly:50000,bud:50000}, gmExclVAT:{ly:260000,bud:250000}, commission:{ly:80000,bud:70000}, ppc:{ly:0,bud:0}, gp:{ly:180000,bud:180000} },
+  transfers: { bookings:{ly:170000,bud:190000}, nights:{ly:170000,bud:190000}, price:{ly:14040000,bud:16100000}, discount:{ly:930000,bud:1010000}, revenue:{ly:13120000,bud:15090000}, supplierRev:{ly:11060000,bud:12680000}, gmInclVAT:{ly:2060000,bud:2410000}, vat:{ly:340000,bud:400000}, gmExclVAT:{ly:1710000,bud:2010000}, commission:{ly:300000,bud:390000}, ppc:{ly:250000,bud:260000}, gp:{ly:1170000,bud:1360000} },
+  carHire:   { bookings:{ly:20000,bud:20000}, nights:{ly:20000,bud:20000}, price:{ly:4630000,bud:5180000}, discount:{ly:310000,bud:350000}, revenue:{ly:4320000,bud:4830000}, supplierRev:{ly:4250000,bud:4750000}, gmInclVAT:{ly:70000,bud:80000}, vat:{ly:10000,bud:10000}, gmExclVAT:{ly:60000,bud:60000}, commission:{ly:60000,bud:70000}, ppc:{ly:0,bud:0}, gp:{ly:0,bud:-10000} }
+};
+
+const KPI_DATA = {
+  parking:   { nightsPerBkg:{ly:7.68,bud:7.68}, pricePerNight:{ly:12.36,bud:12.48}, discPct:{ly:6.62,bud:6.23}, revPerNight:{ly:11.54,bud:11.70}, gmExclPct:{ly:16.07,bud:16.59}, commPct:{ly:2.50,bud:2.40}, ppcPerBkg:{ly:1.76,bud:1.75}, gpPerBkg:{ly:10.28,bud:11.01} },
+  hotels:    { nightsPerBkg:{ly:1.02,bud:1.04}, pricePerNight:{ly:183.92,bud:184.01}, discPct:{ly:5.65,bud:5.39}, revPerNight:{ly:173.53,bud:174.10}, gmExclPct:{ly:20.03,bud:20.16}, commPct:{ly:2.37,bud:2.13}, ppcPerBkg:{ly:5.91,bud:5.71}, gpPerBkg:{ly:25.51,bud:26.60} },
+  lounges:   { nightsPerBkg:{ly:1.00,bud:1.00}, pricePerNight:{ly:97.09,bud:97.71}, discPct:{ly:5.07,bud:4.85}, revPerNight:{ly:92.44,bud:92.83}, gmExclPct:{ly:16.73,bud:16.93}, commPct:{ly:3.31,bud:3.35}, ppcPerBkg:{ly:1.52,bud:1.46}, gpPerBkg:{ly:10.83,bud:11.17} },
+  fastTrack: { nightsPerBkg:{ly:1.00,bud:1.00}, pricePerNight:{ly:16.18,bud:15.82}, discPct:{ly:0.01,bud:0.01}, revPerNight:{ly:16.18,bud:15.82}, gmExclPct:{ly:14.55,bud:14.52}, commPct:{ly:4.22,bud:4.02}, ppcPerBkg:{ly:0.00,bud:0.00}, gpPerBkg:{ly:1.64,bud:1.64} },
+  transfers: { nightsPerBkg:{ly:1.00,bud:1.00}, pricePerNight:{ly:82.59,bud:84.74}, discPct:{ly:6.59,bud:6.27}, revPerNight:{ly:77.18,bud:79.42}, gmExclPct:{ly:13.07,bud:13.30}, commPct:{ly:2.29,bud:2.58}, ppcPerBkg:{ly:1.47,bud:1.37}, gpPerBkg:{ly:6.88,bud:7.16} },
+  carHire:   { nightsPerBkg:{ly:1.00,bud:1.00}, pricePerNight:{ly:231.50,bud:259.00}, discPct:{ly:6.71,bud:6.76}, revPerNight:{ly:216.00,bud:241.50}, gmExclPct:{ly:1.39,bud:1.24}, commPct:{ly:1.39,bud:1.45}, ppcPerBkg:{ly:0.00,bud:0.00}, gpPerBkg:{ly:0.00,bud:-0.50} }
+};
+
+const CONTRACTED_MARGIN = {
+  parking:   { ly: 24.63, bud: 24.90 },
+  hotels:    { ly: 28.33, bud: 28.27 },
+  lounges:   { ly: 24.13, bud: 24.18 },
+  fastTrack: { ly: 17.46, bud: 17.43 },
+  transfers: { ly: 21.24, bud: 21.24 },
+  carHire:   { ly: 8.17,  bud: 8.16  }
+};
+
+const DISCOUNT_PCT = {
+  parking:   { ly: 6.62, bud: 6.23 },
+  hotels:    { ly: 5.65, bud: 5.39 },
+  lounges:   { ly: 5.07, bud: 4.85 },
+  fastTrack: { ly: 0.01, bud: 0.01 },
+  transfers: { ly: 6.59, bud: 6.29 },
+  carHire:   { ly: 6.71, bud: 6.71 }
+};
+
+const PPC_PER_BKG = {
+  parking:   { ly: 1.76, bud: 1.75 },
+  hotels:    { ly: 5.95, bud: 5.73 },
+  lounges:   { ly: 1.52, bud: 1.45 },
+  fastTrack: { ly: 0.00, bud: 0.00 },
+  transfers: { ly: 1.48, bud: 1.38 },
+  carHire:   { ly: 0.00, bud: 0.00 }
+};
+
+const BRIDGE_KPIS = [
+  {
+    key: 'bookings',
+    title: 'Bookings',
+    subtitle: 'Volume growth contribution to GP',
+    color: '#2A77B6',
+    changeLabel: '+84k bookings',
+    subLabel: 'LY 4.65m → Budget 4.74m (+1.8%)',
+    impact: '+~£1.0m GP',
+    impactClass: 'pos',
+    chartTitle: 'Bookings by Product — LY vs Budget',
+    chartType: 'bookings',
+    context: [
+      'TUI integration switching off May–Nov 26: −50k parking, −9k hotels bookings — effects revert Dec 26',
+      'New GLA parking site: +10,895 bookings launching Jul 26',
+      'Items per trip (Brad): +8,600 hotels, +4,100 lounges in Y1',
+      'WeDiscover optimisation: +6k parking, +1.4k hotels, +400 lounges',
+      'PPC landing page optimisation: +2.09% parking directs, +7,500 hotels in Y1',
+      'Transfers: +5% base growth (+8.4k) plus new partner opportunity +6.4k FY27',
+      'New parking partnerships: Freebird +1k, Hol Gems +3.9k, Corendon +2.4k, Now Extras +1.9k, Dreamlake +1.4k'
+    ]
+  },
+  {
+    key: 'discount',
+    title: 'Discount Rate',
+    subtitle: 'Rate reduction flowing directly to revenue & GP',
+    color: '#347E7A',
+    changeLabel: '−0.39pp',
+    subLabel: 'LY 6.62% → Budget 6.23% of price',
+    impact: '+~£1.9m GP',
+    impactClass: 'pos',
+    chartTitle: 'Discount Rate by Product (% of Price) — LY vs Budget',
+    chartType: 'discountPct',
+    context: [
+      'Capping discounts at 50% of contracted margin across all retail products — effective from April 26',
+      'Removing all discounts below £4 from July 26 — eliminating unprofitable micro-discounts from the long tail',
+      'Margin shaving program: cascading reductions (e.g. 10% → 9.6%) generating c−0.87% improvement from April 26',
+      'Transfers: further −5% reduction in discount rate (follows −9% reduction in FY26) — mainly driven by new partner mix',
+      'Fast Track: no discounts applied — rate remains at 0.01% incidental',
+      'Car Hire: no change to discount rate for FY27'
+    ]
+  },
+  {
+    key: 'contractedMargin',
+    title: 'Contracted Margin',
+    subtitle: 'Supplier cost rate and channel mix shift',
+    color: '#BC5415',
+    changeLabel: '+27bps',
+    subLabel: 'LY 24.63% → Budget 24.90% (incl. VAT)',
+    impact: '+~£0.8m GP',
+    impactClass: 'pos',
+    chartTitle: 'Contracted Gross Margin % (incl. VAT) — LY vs Budget',
+    chartType: 'contractedMargin',
+    context: [
+      'Parking: c0.3% supplier cost improvement per commercial steer; offset by BHX headwind — loss of 15% margin, transferring to 27% APS / 30% MMP product',
+      'Hotels: slight margin decline (0.1–0.2pp) from new bedstock; mix improves as TUI (lower-margin retail) switches off, improving the blend',
+      'Lounges: small improvement from returning premium products at higher contracted rates',
+      'Transfers & Car Hire: stable supplier agreements — no contracted margin change assumed',
+      'Overall +27bps is mix-driven: higher-margin products growing faster and removal of TUI improving the retail channel blend across Parking and Hotels'
+    ]
+  },
+  {
+    key: 'ppc',
+    title: 'PPC Costs',
+    subtitle: 'Flat absolute spend — cost per booking falls',
+    color: '#542E91',
+    changeLabel: '+£43k spend',
+    subLabel: 'LY £10.0m → Budget £10.1m · CpB falling',
+    impact: '−£43k (net GP-positive)',
+    impactClass: 'neg',
+    chartTitle: 'PPC Cost Per Booking (£) — LY vs Budget',
+    chartType: 'ppcPerBkg',
+    context: [
+      'Parking: 0.5% absolute PPC growth; cost per booking falls £1.76 → £1.75 — more bookings per £ spent',
+      'Hotels: 0.5% absolute growth; PPC landing page optimisation drives +7,500 incremental bookings; CpB falls £5.95 → £5.73',
+      'Lounges: flat absolute spend at £350k — improving efficiency through landing page optimisation',
+      'Transfers: −7% reduction in cost per booking — improved PPC targeting and hotel email conversion',
+      'Car Hire & Fast Track: no PPC costs budgeted for FY27',
+      'Net: PPC barely increases in absolute terms (+£43k) but generates meaningfully more bookings — the slight headwind is more than offset by incremental GP'
+    ]
+  }
+];
+
+const CONTEXT = {
+  parking: {
+    headline: "TUI Integration switching off May–Nov 26 is the dominant FY27 story — alongside BHX headwinds and a strong pipeline of new partnerships",
+    tuiBanner: true,
+    sections: [
+      { title: "TUI Integration", color: "#542E91", items: [
+        "Removing integration May–Nov 26 — volume back 50k bookings",
+        "Material commission saving for 6 months, reverting Dec 26",
+        "Retail canx rate halves for 6 months, reverting Dec 26",
+        "120% growth expected in TUI White Label history uplift"
+      ]},
+      { title: "Volume Drivers", color: "#2A77B6", items: [
+        "Base market growth: commercial model 0.4% (deep research suggests 5–6%); includes 17% volume decline at BHX",
+        "New site GLA: 10,895 bookings, launching Jul 26",
+        "Last Minute added @ 25k pa from Jan 26; Booking.com @ 10k pa from Jan 26 (quadruples on integration, not yet scheduled)",
+        "PPC landing page optimisation: +2.09% growth in directs from April",
+        "WeDiscover optimisation: +6k bookings",
+        "Paylater optimisation c2k pa (from F3, still in scope per Brad)",
+        "New integrations: Freebird +1k (Apr 26), KM Malta Airlines +405 (Jun 26), Hol Gems +3,931 (Jun 26), WWIS +54 (Mar 26), Now Extras +1,875 (May 26), Dreamlake +1,375 (Sep 26), Dan Air +333 (May 26), Corendon Airlines +2,400 (Nov 26)"
+      ]},
+      { title: "Price", color: "#347E7A", items: [
+        "Run rate applied Jan–Mar; 0.45% sell inflation from commercial model",
+        "Trip personalisation (addons / shift to more expensive product): +0.4% added Y1 and continued",
+        "Overall inflation 0.85% — down from ~2% in prior version, BHX a significant drag"
+      ]},
+      { title: "Discounts", color: "#BC5415", items: [
+        "Delivering ~0.5pp discount saving through: capping at 50% of contracted margin, removing <£4 discounts, margin shaving (10% → 9.6% etc.)",
+        "-0.87% from margin shaving from April; -0.75% from removing <£4 from Jul 26"
+      ]},
+      { title: "Margin", color: "#D9313A", items: [
+        "c0.3% supplier cost adjustment per commercial steer",
+        "BHX: loss of 15% margin, transferring to 27% APS or 30% MMP product — chief driver of margin pressure"
+      ]},
+      { title: "Commission & PPC", color: "#2A77B6", items: [
+        "Retail commission blending to c12% with TUI integration removal (annualisation of Just Park)",
+        "Blue Light Card commission increase to end Dec 26 (+0.22% uplift)",
+        "Intermediary commission increase pulled forward to May for eJH integration (+c3.16%)",
+        "PPC: 0.5% annualised absolute growth — net positive on bookings"
+      ]},
+      { title: "Cancellation Rate", color: "#D9313A", items: [
+        "FY26: retail canx rate running ~18% — annualised",
+        "FY27: halves to ~9% when TUI integration switches off"
+      ]}
+    ]
+  },
+  hotels: {
+    headline: "TUI off May–Nov 26 (-9k bkgs) more than offset by items-per-trip, bedstock expansion and PPC gains — canx rate improvement adds significant quality benefit",
+    tuiBanner: true,
+    sections: [
+      { title: "TUI Integration", color: "#542E91", items: [
+        "Removing integration May–Nov 26 — volume back 9k bookings",
+        "Material commission saving for 6 months, reverting Dec 26",
+        "Retail canx rate halves for 6 months, reverting Dec 26",
+        "120% growth expected in TUI White Label history uplift"
+      ]},
+      { title: "Volume Drivers", color: "#347E7A", items: [
+        "Base market growth: commercial model 2% (deep research suggests 5–6%)",
+        "+8,600 bookings in Y1 from increasing items per trip (per Brad)",
+        "+1,400 bookings from WeDiscover optimisation",
+        "+7,500 bookings from PPC landing page optimisation in Y1",
+        "Hotel bedstock increase: +10k bookings (pro-rated)",
+        "New integrations: Malta Airlines +338 (Jun 26), Hol Gems +66 (Jun 26)",
+        "Discount shaving: -0.87% from margin shaving (from April), -0.75% from removing <£4 (from Jul 26)"
+      ]},
+      { title: "Price", color: "#2A77B6", items: [
+        "Commercial expecting -0.5% decline through new bedstock additions",
+        "Brad expecting +0.44% uplift (D&I only)",
+        "Net: small overall price growth as retail (lowest price point) declines in mix"
+      ]},
+      { title: "Margin & Discounts", color: "#BC5415", items: [
+        "Supplier cost blending at 71.63%; general 0.1–0.2pp reduction expected",
+        "~0.5pp discount saving through capping at 50% of contracted margin"
+      ]},
+      { title: "Commission & PPC", color: "#2A77B6", items: [
+        "Retail commission blending to c12.7% with TUI integration removal",
+        "Blue Light Card commission increase to end Dec 26 (+0.28% uplift)",
+        "PPC: 0.5% annualised absolute growth — net positive on bookings"
+      ]},
+      { title: "Cancellation Rate", color: "#D9313A", items: [
+        "FY26: retail canx rate running ~30% — annualised",
+        "FY27: halves to ~15% when TUI integration switches off"
+      ]}
+    ]
+  },
+  lounges: {
+    headline: "Steady 3% market growth, returning products and items-per-trip driving solid volume gains — no TUI impact",
+    tuiBanner: false,
+    sections: [
+      { title: "Volume Drivers", color: "#BC5415", items: [
+        "+400 bookings from WeDiscover optimisation",
+        "3% market growth in FY27 as products return to market",
+        "+4,100 bookings in Y1 from increasing items per trip",
+        "New partners: Compareparking.ie +86 (Apr 26), Freebird +388 (Apr 26), KM Malta Airlines +66 (Jun 26), Hol Gems +39 (Jun 26), WWIS +63 (Mar 26), Dreamlake +35 (Sep 26), LOT Polish +150 (Jul 26)"
+      ]},
+      { title: "Price", color: "#347E7A", items: [
+        "Small rate increase driven by mix shift (returning premium products)",
+        "In-month lag looks relatively stable — left unchanged"
+      ]},
+      { title: "Discounts", color: "#2A77B6", items: [
+        "Direct expected to run c5.1%",
+        "Intermediary expected to run c6.3%"
+      ]},
+      { title: "Margin & Commission", color: "#2A77B6", items: [
+        "CoS blending at 75.82%",
+        "Retail commission average c11.2%; Intermediary c6%",
+        "Blue Light Card commission increase to end Dec 26 (+0.18% uplift)",
+        "PPC: 0.5% annualised growth, delivering additional bookings"
+      ]}
+    ]
+  },
+  fastTrack: {
+    headline: "Strong direct channel momentum — 20%+ growth continuing to Sep 26 with all channels in growth",
+    tuiBanner: false,
+    sections: [
+      { title: "Volume Drivers", color: "#542E91", items: [
+        "Jan to date booking growth strong across all channels",
+        "Direct run rate continues at 20%+ growth to Sep 26",
+        "Intermediary: absolute monthly profile looks stable — set to 5% growth",
+        "Retail: in growth for 12 months — set to 5%"
+      ]},
+      { title: "Commission", color: "#2A77B6", items: [
+        "Blue Light Card commission increase to end Dec 26 (+0.5% uplift)"
+      ]}
+    ]
+  },
+  transfers: {
+    headline: "+5% base volume growth plus new partner opportunity — fastest growing product by GP rate (+16.2%) driven by price inflation and discount improvement",
+    tuiBanner: false,
+    sections: [
+      { title: "FY26 Context", color: "#D9313A", items: [
+        "FY26 forecast GP to end at £964k — +£102k vs budget but -£101k vs F3",
+        "Run rate decline in Jan & Feb with improved performance expected from March onwards"
+      ]},
+      { title: "Volume Drivers", color: "#D9313A", items: [
+        "FY27 base growth +5% (+8,400 bookings)",
+        "New partner opportunity: +6,400 bookings FY27; +3,100 bookings FY28",
+        "Personalised extras: +3,000 bookings",
+        "Additional car seat exposure: +1,400 bookings",
+        "Improved PPC conversion & transfer targeting in hotel emails: +600 bookings"
+      ]},
+      { title: "Price & Discounts", color: "#347E7A", items: [
+        "Base 2% price inflation",
+        "Additional £0.66 per booking for Carol's Cover (c30% of volume at £1.99)",
+        "Further -5% reduction in discount rate (following -9% reduction in FY26)",
+        "FY27 discount movement mainly driven by new partner mix"
+      ]},
+      { title: "Commission & PPC", color: "#2A77B6", items: [
+        "Retail commission c12.5%",
+        "Intermediary commission c4.06% (includes +£5k from improved BLC commercial terms)",
+        "PPC: -7% reduction in cost per booking"
+      ]}
+    ]
+  },
+  carHire: {
+    headline: "Modest 6% base growth with addon upside — key unquantified risk from Booking.com affiliate channel restrictions",
+    tuiBanner: false,
+    riskFlag: "RISK: Potential loss of Booking.com affiliate channel due to discount restrictions — -7k bookings, -£40k GP, -£75k True GP. NOT yet factored into the budget.",
+    sections: [
+      { title: "FY26 Context", color: "#2A77B6", items: [
+        "FY26 True GP forecast to end at £288k vs F3 forecast £279k (+£9k)",
+        "Slight uplift in trading since F3 — Jan–Mar based on current run rate"
+      ]},
+      { title: "Volume Drivers", color: "#2A77B6", items: [
+        "FY27 base growth 6% (+1,000 bookings, includes normalised +100 for lost Intele Travel)",
+        "Personalised extras: +325 new bookings"
+      ]},
+      { title: "Price & Discounts", color: "#347E7A", items: [
+        "Base 2% price inflation",
+        "Increased addon attach rate for car seats: +1% revenue impact (c£50k)",
+        "Discounts: no change"
+      ]},
+      { title: "Commission", color: "#D9313A", items: [
+        "+0.36pp to intermediary for BLC new commercial terms (+£6.5k)",
+        "Intermediary expected c2.1%; Retail expected c10.5%"
+      ]}
+    ]
+  }
+};
+
+// ─────────────────────────────────────────────
+// FORMATTERS
+// ─────────────────────────────────────────────
+function fmt(n) {
+  const abs = Math.abs(n);
+  const sign = n < 0 ? '-' : '';
+  if (abs >= 1e6) return sign + '£' + (abs / 1e6).toFixed(1) + 'm';
+  if (abs >= 1000) return sign + '£' + Math.round(abs / 1000) + 'k';
+  return sign + '£' + abs.toFixed(0);
+}
+function fmtFull(n) {
+  return (n < 0 ? '-£' : '£') + Math.abs(n).toLocaleString();
+}
+function pctChange(bud, ly) {
+  if (ly === 0) return '—';
+  const p = ((bud - ly) / Math.abs(ly)) * 100;
+  return (p >= 0 ? '+' : '') + p.toFixed(1) + '%';
+}
+function pctChangeClass(bud, ly) {
+  const p = ((bud - ly) / Math.abs(ly)) * 100;
+  if (p > 0.05) return 'up';
+  if (p < -0.05) return 'down';
+  return 'flat';
+}
+function pill(bud, ly, invertSign = false) {
+  const p = ly !== 0 ? ((bud - ly) / Math.abs(ly)) * 100 : 0;
+  const label = (p >= 0 ? '+' : '') + p.toFixed(1) + '%';
+  let cls = p > 0.05 ? 'up' : p < -0.05 ? 'down' : 'flat';
+  if (invertSign) cls = cls === 'up' ? 'down' : cls === 'down' ? 'up' : 'flat';
+  return `<span class="pill ${cls}">${label}</span>`;
+}
+
+// ─────────────────────────────────────────────
+// CHART: GP Growth
+// ─────────────────────────────────────────────
+(function() {
+  const labels = PRODUCTS.map(p => p.name);
+  const growths = PRODUCTS.map(p => DATA[p.key].gp.bud - DATA[p.key].gp.ly);
+  const colors = growths.map((v, i) => v >= 0 ? PRODUCTS[i].color : '#D9313A');
+  new Chart(document.getElementById('gpGrowthChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: growths,
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) + ' (' + pctChange(DATA[PRODUCTS[ctx.dataIndex].key].gp.bud, DATA[PRODUCTS[ctx.dataIndex].key].gp.ly) + ')' } } },
+      scales: { x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => fmt(v) } }, y: { grid: { display: false } } }
+    }
+  });
+})();
+
+// ─────────────────────────────────────────────
+// CHART: Revenue Growth
+// ─────────────────────────────────────────────
+(function() {
+  const labels = PRODUCTS.map(p => p.name);
+  const growths = PRODUCTS.map(p => DATA[p.key].revenue.bud - DATA[p.key].revenue.ly);
+  const colors = growths.map((v, i) => v >= 0 ? PRODUCTS[i].color : '#D9313A');
+  new Chart(document.getElementById('revGrowthChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: growths,
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) + ' (' + pctChange(DATA[PRODUCTS[ctx.dataIndex].key].revenue.bud, DATA[PRODUCTS[ctx.dataIndex].key].revenue.ly) + ')' } } },
+      scales: { x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => fmt(v) } }, y: { grid: { display: false } } }
+    }
+  });
+})();
+
+// ─────────────────────────────────────────────
+// TABLE: Distribution Detail (Comm + PPC)
+// ─────────────────────────────────────────────
+(function() {
+  const tbody = document.getElementById('distDetailBody');
+  PRODUCTS.forEach(p => {
+    const d = DATA[p.key];
+    const totalDist = d.commission.bud + d.ppc.bud;
+    const distPct = d.revenue.bud > 0 ? (totalDist / d.revenue.bud * 100).toFixed(1) + '%' : '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="product-dot" style="background:${p.color}"></span>${p.name}</td>
+      <td class="num-ly">${fmt(d.commission.ly)}</td>
+      <td class="num-bud">${fmt(d.commission.bud)}</td>
+      <td class="num-ly">${fmt(d.ppc.ly)}</td>
+      <td class="num-bud">${fmt(d.ppc.bud)}</td>
+      <td class="num-bud">${fmt(totalDist)}</td>
+      <td>${distPct}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  // Total
+  const d = DATA.all;
+  const totalDist = d.commission.bud + d.ppc.bud;
+  const tr = document.createElement('tr');
+  tr.className = 'total-row';
+  tr.innerHTML = `<td>Total</td><td>${fmt(d.commission.ly)}</td><td>${fmt(d.commission.bud)}</td><td>${fmt(d.ppc.ly)}</td><td>${fmt(d.ppc.bud)}</td><td>${fmt(totalDist)}</td><td>${(totalDist/d.revenue.bud*100).toFixed(2)}%</td>`;
+  tbody.appendChild(tr);
+})();
+
+// ─────────────────────────────────────────────
+// CHART: Distribution Costs (Comm + PPC stacked)
+// ─────────────────────────────────────────────
+(function() {
+  new Chart(document.getElementById('distChart'), {
+    type: 'bar',
+    data: {
+      labels: PRODUCTS.map(p => p.name),
+      datasets: [
+        { label: 'Commission', data: PRODUCTS.map(p => DATA[p.key].commission.bud), backgroundColor: PRODUCTS.map(p => p.color), borderRadius: 4 },
+        { label: 'PPC', data: PRODUCTS.map(p => DATA[p.key].ppc.bud), backgroundColor: PRODUCTS.map(p => p.color + '70'), borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: {size:11}, boxWidth:12 } }, tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + fmt(ctx.raw) } } },
+      scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, ticks: { callback: v => fmt(v) } } }
+    }
+  });
+})();
+
+// ─────────────────────────────────────────────
+// PRODUCT TABS
+// ─────────────────────────────────────────────
+(function() {
+  const tabsEl = document.getElementById('productTabs');
+  const panesEl = document.getElementById('productPanes');
+
+  PRODUCTS.forEach((p, i) => {
+    const d = DATA[p.key];
+    const k = KPI_DATA[p.key];
+
+    // Tab button
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = p.name;
+    btn.style.setProperty('--c', p.color);
+    if (i === 0) btn.style.background = p.color;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach((b, j) => {
+        b.classList.toggle('active', j === i);
+        b.style.background = j === i ? PRODUCTS[j].color : '';
+      });
+      document.querySelectorAll('.tab-pane').forEach((pane, j) => pane.classList.toggle('active', j === i));
+    });
+    tabsEl.appendChild(btn);
+
+    // Pane
+    const pane = document.createElement('div');
+    pane.className = 'tab-pane' + (i === 0 ? ' active' : '');
+
+    // Left: P&L table
+    const leftCard = document.createElement('div');
+    leftCard.className = 'card';
+    leftCard.innerHTML = `
+      <div class="card-title" style="border-left:4px solid ${p.color};padding-left:0.75rem">${p.name} — Full P&L</div>
+      <table class="pl-table">
+        <thead><tr><th>Metric</th><th>Last Year</th><th>Budget</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr class="section-row"><td colspan="4">Volume</td></tr>
+          <tr><td>Bookings</td><td class="num-ly">${d.bookings.ly.toLocaleString()}</td><td class="num-bud">${d.bookings.bud.toLocaleString()}</td><td>${pill(d.bookings.bud,d.bookings.ly)}</td></tr>
+          <tr><td>Nights</td><td class="num-ly">${d.nights.ly.toLocaleString()}</td><td class="num-bud">${d.nights.bud.toLocaleString()}</td><td>${pill(d.nights.bud,d.nights.ly)}</td></tr>
+          <tr class="section-row"><td colspan="4">Revenue Build</td></tr>
+          <tr><td>Price (incl. VAT)</td><td class="num-ly">${fmt(d.price.ly)}</td><td class="num-bud">${fmt(d.price.bud)}</td><td>${pill(d.price.bud,d.price.ly)}</td></tr>
+          <tr><td>Discount (incl. VAT)</td><td class="num-ly">${fmt(d.discount.ly)}</td><td class="num-bud">${fmt(d.discount.bud)}</td><td>${pill(d.discount.bud,d.discount.ly,true)}</td></tr>
+          <tr class="highlight-row"><td>Revenue (incl. VAT)</td><td class="num-ly">${fmt(d.revenue.ly)}</td><td class="num-bud">${fmt(d.revenue.bud)}</td><td>${pill(d.revenue.bud,d.revenue.ly)}</td></tr>
+          <tr class="section-row"><td colspan="4">Margin Build</td></tr>
+          <tr><td>Supplier Revenue (incl. VAT)</td><td class="num-ly">${fmt(d.supplierRev.ly)}</td><td class="num-bud">${fmt(d.supplierRev.bud)}</td><td>${pill(d.supplierRev.bud,d.supplierRev.ly,true)}</td></tr>
+          <tr><td>Gross Margin (incl. VAT)</td><td class="num-ly">${fmt(d.gmInclVAT.ly)}</td><td class="num-bud">${fmt(d.gmInclVAT.bud)}</td><td>${pill(d.gmInclVAT.bud,d.gmInclVAT.ly)}</td></tr>
+          <tr><td>VAT</td><td class="num-ly">${fmt(d.vat.ly)}</td><td class="num-bud">${fmt(d.vat.bud)}</td><td>—</td></tr>
+          <tr class="highlight-row"><td>Gross Margin (excl. VAT)</td><td class="num-ly">${fmt(d.gmExclVAT.ly)}</td><td class="num-bud">${fmt(d.gmExclVAT.bud)}</td><td>${pill(d.gmExclVAT.bud,d.gmExclVAT.ly)}</td></tr>
+          <tr class="section-row"><td colspan="4">Distribution Costs</td></tr>
+          <tr><td>Commission (excl. VAT)</td><td class="num-ly">${fmt(d.commission.ly)}</td><td class="num-bud">${fmt(d.commission.bud)}</td><td>${pill(d.commission.bud,d.commission.ly,true)}</td></tr>
+          <tr><td>PPC Costs (excl. VAT)</td><td class="num-ly">${fmt(d.ppc.ly)}</td><td class="num-bud">${fmt(d.ppc.bud)}</td><td>${pill(d.ppc.bud,d.ppc.ly,true)}</td></tr>
+          <tr class="gp-row"><td>Gross Profit (excl. VAT)</td><td class="num-ly">${fmt(d.gp.ly)}</td><td class="num-bud">${fmt(d.gp.bud)}</td><td>${pill(d.gp.bud,d.gp.ly)}</td></tr>
+        </tbody>
+      </table>
+    `;
+
+    // Right: KPI cards
+    const rightCard = document.createElement('div');
+    rightCard.className = 'card';
+    rightCard.innerHTML = `
+      <div class="card-title" style="border-left:4px solid ${p.color};padding-left:0.75rem">${p.name} — Key KPIs</div>
+      <div class="product-kpis">
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">Price Per Night</div>
+          <div class="prod-kpi-val">£${k.pricePerNight.bud.toFixed(2)}</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY £${k.pricePerNight.ly.toFixed(2)}</span>&nbsp;${pill(k.pricePerNight.bud,k.pricePerNight.ly)}</div>
+        </div>
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">Revenue Per Night</div>
+          <div class="prod-kpi-val">£${k.revPerNight.bud.toFixed(2)}</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY £${k.revPerNight.ly.toFixed(2)}</span>&nbsp;${pill(k.revPerNight.bud,k.revPerNight.ly)}</div>
+        </div>
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">Discount % of Price</div>
+          <div class="prod-kpi-val">${k.discPct.bud.toFixed(2)}%</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${k.discPct.ly.toFixed(2)}%</span>&nbsp;${pill(k.discPct.bud,k.discPct.ly,true)}</div>
+        </div>
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">GM% (excl. VAT)</div>
+          <div class="prod-kpi-val">${k.gmExclPct.bud.toFixed(2)}%</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${k.gmExclPct.ly.toFixed(2)}%</span>&nbsp;${pill(k.gmExclPct.bud,k.gmExclPct.ly)}</div>
+        </div>
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">Commission % of Revenue</div>
+          <div class="prod-kpi-val">${k.commPct.bud.toFixed(2)}%</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${k.commPct.ly.toFixed(2)}%</span>&nbsp;${pill(k.commPct.bud,k.commPct.ly,true)}</div>
+        </div>
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">PPC Cost Per Booking</div>
+          <div class="prod-kpi-val">£${k.ppcPerBkg.bud.toFixed(2)}</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY £${k.ppcPerBkg.ly.toFixed(2)}</span>&nbsp;${pill(k.ppcPerBkg.bud,k.ppcPerBkg.ly,true)}</div>
+        </div>
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">GP Per Booking</div>
+          <div class="prod-kpi-val">£${k.gpPerBkg.bud.toFixed(2)}</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY £${k.gpPerBkg.ly.toFixed(2)}</span>&nbsp;${pill(k.gpPerBkg.bud,k.gpPerBkg.ly)}</div>
+        </div>
+        <div class="prod-kpi">
+          <div class="prod-kpi-label">Nights Per Booking</div>
+          <div class="prod-kpi-val">${k.nightsPerBkg.bud.toFixed(2)}</div>
+          <div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${k.nightsPerBkg.ly.toFixed(2)}</span>&nbsp;${pill(k.nightsPerBkg.bud,k.nightsPerBkg.ly)}</div>
+        </div>
+      </div>
+    `;
+
+    const topRow = document.createElement('div');
+    topRow.className = 'tab-pane-top';
+    topRow.appendChild(leftCard);
+    topRow.appendChild(rightCard);
+    pane.appendChild(topRow);
+    panesEl.appendChild(pane);
+  });
+})();
+
+// ─────────────────────────────────────────────
+// BRIDGE WATERFALL CHART
+// ─────────────────────────────────────────────
+(function() {
+  const lyGP = 54268100, budGP = 58749300;
+  // Bridge contributions (sum = 4,481,200)
+  const vol = 1000000, disc = 1900000, cm = 800000, ppc = -43000, other = 824200;
+  const s0 = lyGP, s1 = s0+vol, s2 = s1+disc, s3 = s2+cm, s4 = s3+ppc;
+
+  const fmtM = v => (v >= 0 ? '+' : '') + '£' + (Math.abs(v)/1e6).toFixed(1) + 'm';
+
+  new Chart(document.getElementById('bridgeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['LY GP', 'Volume\n(Bookings)', 'Discount\nRate', 'Contracted\nMargin', 'PPC\nCosts', 'Commiss.\n& Other', 'Budget GP'],
+      datasets: [{
+        data: [[0,lyGP],[s0,s0+vol],[s1,s1+disc],[s2,s2+cm],[s3,s3+ppc],[s4,s4+other],[0,budGP]],
+        backgroundColor: ['#3a1f6b','#347E7A','#347E7A','#347E7A','#D9313A','#347E7A','#2A77B6'],
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const [lo, hi] = ctx.raw;
+              if (lo === 0) return ' £' + (hi/1e6).toFixed(2) + 'm';
+              const diff = hi - lo;
+              return ' ' + fmtM(diff) + ' (' + (diff >= 0 ? '+' : '') + (diff/lyGP*100).toFixed(1) + '% of LY GP)';
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: {
+          grid: { color: '#f1f5f9' },
+          ticks: { callback: v => '£' + (v/1e6).toFixed(0) + 'm' },
+          min: 50000000
+        }
+      }
+    }
+  });
+})();
+
+// ─────────────────────────────────────────────
+// BRIDGE KPI CARDS + EXPANDABLE PANELS
+// ─────────────────────────────────────────────
+(function() {
+  const gridEl   = document.getElementById('bridgeKpiGrid');
+  const panelsEl = document.getElementById('bridgePanels');
+  const chartInst = {};
+
+  BRIDGE_KPIS.forEach(kpi => {
+    // ── Card ──
+    const card = document.createElement('div');
+    card.className = 'bridge-kpi';
+    card.style.borderTopColor = kpi.color;
+    card.innerHTML = `
+      <div class="bridge-kpi-label">${kpi.title}</div>
+      <div class="bridge-kpi-change" style="color:${kpi.color}">${kpi.changeLabel}</div>
+      <div class="bridge-kpi-vals">${kpi.subLabel}</div>
+      <span class="bridge-kpi-impact ${kpi.impactClass}">${kpi.impact}</span>
+      <div class="bridge-kpi-cta">
+        <span class="bridge-kpi-cta-icon" style="color:${kpi.color}">▾</span>
+        <span class="bridge-kpi-cta-close">Explore drivers</span>
+        <span class="bridge-kpi-cta-open">Hide details</span>
+      </div>
+    `;
+    gridEl.appendChild(card);
+
+    // ── Panel ──
+    const panel = document.createElement('div');
+    panel.className = 'bridge-panel';
+    panel.style.borderLeftColor = kpi.color;
+    const cid = 'bc-' + kpi.key;
+    panel.innerHTML = `
+      <div class="bridge-panel-header">
+        <h3 style="color:${kpi.color}">${kpi.title} — Detail &amp; Context</h3>
+        <span class="pill ${kpi.impactClass === 'pos' ? 'up' : 'down'}">${kpi.impact}</span>
+      </div>
+      <div class="bridge-panel-inner">
+        <div>
+          <div class="bridge-panel-title" style="font-size:0.85rem;font-weight:700;color:#374151;margin-bottom:1rem">${kpi.chartTitle}</div>
+          <div style="height:230px"><canvas id="${cid}"></canvas></div>
+        </div>
+        <div class="bridge-context">
+          <h4>Key Assumptions &amp; Drivers</h4>
+          <ul class="bridge-context-list">${kpi.context.map(c => `<li>${c}</li>`).join('')}</ul>
+          <div class="bridge-impact ${kpi.impactClass}">
+            <span>${kpi.impactClass === 'pos' ? '▲' : '▼'}</span>
+            <span>Estimated GP impact: <strong>${kpi.impact}</strong></span>
+          </div>
+        </div>
+      </div>
+    `;
+    panelsEl.appendChild(panel);
+
+    // ── Toggle ──
+    card.addEventListener('click', () => {
+      const opening = !panel.classList.contains('visible');
+      card.classList.toggle('open', opening);
+      panel.classList.toggle('visible', opening);
+
+      if (opening && !chartInst[kpi.key]) {
+        const labels = PRODUCTS.map(p => p.name);
+        const colors = PRODUCTS.map(p => p.color);
+        const lyDataset  = (data) => ({ label:'Last Year', data, backgroundColor: colors.map(c => c+'55'), borderColor: colors, borderWidth: 2, borderRadius: 4 });
+        const budDataset = (data) => ({ label:'Budget',    data, backgroundColor: colors, borderRadius: 4, borderWidth: 0 });
+
+        let datasets, yTick;
+        if (kpi.chartType === 'bookings') {
+          datasets = [
+            lyDataset(PRODUCTS.map(p => DATA[p.key].bookings.ly)),
+            budDataset(PRODUCTS.map(p => DATA[p.key].bookings.bud))
+          ];
+          yTick = v => v >= 1e6 ? (v/1e6).toFixed(1)+'m' : v >= 1000 ? Math.round(v/1000)+'k' : v;
+        } else if (kpi.chartType === 'discountPct') {
+          datasets = [
+            lyDataset(PRODUCTS.map(p => DISCOUNT_PCT[p.key].ly)),
+            budDataset(PRODUCTS.map(p => DISCOUNT_PCT[p.key].bud))
+          ];
+          yTick = v => v.toFixed(1) + '%';
+        } else if (kpi.chartType === 'contractedMargin') {
+          datasets = [
+            lyDataset(PRODUCTS.map(p => CONTRACTED_MARGIN[p.key].ly)),
+            budDataset(PRODUCTS.map(p => CONTRACTED_MARGIN[p.key].bud))
+          ];
+          yTick = v => v.toFixed(1) + '%';
+        } else if (kpi.chartType === 'ppcPerBkg') {
+          datasets = [
+            lyDataset(PRODUCTS.map(p => PPC_PER_BKG[p.key].ly)),
+            budDataset(PRODUCTS.map(p => PPC_PER_BKG[p.key].bud))
+          ];
+          yTick = v => '£' + v.toFixed(2);
+        }
+
+        chartInst[kpi.key] = new Chart(document.getElementById(cid), {
+          type: 'bar',
+          data: { labels, datasets },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 10 } } },
+            scales: {
+              x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+              y: { grid: { color: '#f1f5f9' }, ticks: { callback: yTick, font: { size: 10 } }, suggestedMin: 0 }
+            }
+          }
+        });
+      }
+    });
+  });
+})();
+
+// ─────────────────────────────────────────────
+// REGION SWITCHER
+// ─────────────────────────────────────────────
+function switchRegion(region) {
+  const ukEl  = document.getElementById('ukSections');
+  const euEl  = document.getElementById('euSections');
+  const insEl = document.getElementById('insuranceSections');
+  const btnUK  = document.getElementById('btnUK');
+  const btnEU  = document.getElementById('btnEU');
+  const btnIns = document.getElementById('btnIns');
+  [ukEl, euEl, insEl].forEach(el => el.style.display = 'none');
+  [btnUK, btnEU, btnIns].forEach(b => b.classList.remove('active', 'eu-active', 'ins-active'));
+  if (region === 'uk') {
+    ukEl.style.display = 'block';
+    btnUK.classList.add('active');
+  } else if (region === 'eu') {
+    euEl.style.display = 'block';
+    btnEU.classList.add('active', 'eu-active');
+    if (!window._euChartsInit) { initEuCharts(); window._euChartsInit = true; }
+  } else {
+    insEl.style.display = 'block';
+    btnIns.classList.add('active', 'ins-active');
+    if (!window._insChartsInit) { initInsuranceCharts(); window._insChartsInit = true; }
+  }
+}
+
+// ─────────────────────────────────────────────
+// UK COMMERCIAL CONTEXT — PARKING AIRPORTS
+// ─────────────────────────────────────────────
+const UK_PARKING_CONTEXT = [
+  { code:'MAN', name:'Manchester', color:'#D9313A',
+    headline:'2% FY26 → 3% thereafter · Maple P&R competition from Dec 25',
+    points:['Forecasting 50m pax by 2040','Maple P&R in market from Dec 25 — new competitive pressure on off-airport supply','FY26/27: Told 2% growth for 2026, 3% thereafter to achieve 2040 pax target','2025 currently +4% pax growth YoY','FY27/28: −0.7pp margin (CAVU −1pp, Off Airport +0.3pp) — FY26/27 is a blend of this'] },
+  { code:'STN', name:'Stansted', color:'#542E91',
+    headline:'2% FY26 → 3% thereafter · 43mppa expansion complete 2027',
+    points:['FY26/27: Told 2% for 2026, 3% thereafter to achieve 2040 pax cap of 51mppa','2025 currently flat YoY','Can serve 43mppa when expansion complete (2027); pax cap of 51mppa by 2040','Replicated Manchester growth model — reaches 46m by 2040','FY27/28: −0.7pp margin (CAVU −1pp, Off Airport +0.3pp) — FY26/27 is a blend of this'] },
+  { code:'LGW', name:'Gatwick', color:'#2A77B6',
+    headline:'More on-airport at lower margin · 1% growth · not back to 2019 levels',
+    points:['More on-airport allocation at lower than market margin, reducing overall contracted GM by −1pp','Not near operational cap on one runway — no pricing pressure, 1% growth applied','Steady profile implemented as still not back to 2019 passenger levels','In 2024 airport believed they\'d reach 58m pax by 2032 — flat in 2025, forecast too punchy'] },
+  { code:'LHR', name:'Heathrow', color:'#347E7A',
+    headline:'0.5% pax growth → pax cap 2026 · no margin change · long-term contracts',
+    points:['2025: 0.5% pax growth','Will reach pax cap in 2026 with another 0.5% growth','Looking for 10m more pax on 2024 by 2031 (at 2% per year)','No change to margin — long-term contracts in place'] },
+  { code:'BHX', name:'Birmingham', color:'#BC5415',
+    headline:'BHX Transference model applied',
+    points:['BHX Transference model applied — volume and pricing assumptions derived from transference analysis'] },
+  { code:'EMA', name:'East Midlands', color:'#2A77B6',
+    headline:'FY25 forecast −6% · prudent growth below MAN & STN rates',
+    points:['FY25 forecast −6%','Well under pax cap of 6m','No reported significant pax growth — prudent forecast applied, below MAN & STN growth rates','FY27/28: −0.7pp margin (CAVU −1pp, Off Airport +0.3pp) — FY26/27 is a blend of this'] },
+  { code:'LTN', name:'Luton', color:'#D9313A',
+    headline:'NME model · pax growth in price FY26/27 · volume growth from FY27/28',
+    points:['Using same pax growth % as NME model','Same capacity FY26/27 — pax growth expressed in price inflation','NME in FY27/28 — volume growth resumes with 1% price growth for outer years','No margin changes'] },
+  { code:'BRS', name:'Bristol', color:'#2C6B68',
+    headline:'Long-term contract locked in · 4% pax growth until pax cap FY28/29',
+    points:['Long-term contract locked in','4% pax growth until pax cap reached in FY28/29','1% price growth only — expecting 3rd multi-storey car park when pax cap is reached'] },
+  { code:'NCL', name:'Newcastle', color:'#BC5415',
+    headline:'+10% pax growth 2026 · +15% capacity FY26/27 · asset sweating strategy',
+    points:['Expecting 6m pax growth in 2026 (+10%)','Capacity increase of 15% in FY26/27','Open to sweating the assets (price deflation strategy)','Reaches pax cap — increases pricing from FY27/28'] },
+  { code:'CWL', name:'Cardiff', color:'#542E91',
+    headline:'Not at 2019 levels · HX yield opportunity · PpN +8% FY26/27',
+    points:['Not yet at 2019 pax levels','HX potential yield opportunity identified','Steady booking growth (+2% for outer years)','Better yield: PpN +8% for FY26/27, then +3% thereafter'] },
+  { code:'LBA', name:'Leeds Bradford', color:'#24659B',
+    headline:'Risk: potential airport loss FY27/28 — 20% vol loss, 10% price deflation',
+    points:['Possibility of losing airport in FY27/28 — 20% volume loss and 10% price deflation modelled','Margin increases to blend of 28.5% with off-airport supply only if lost','2% price and volume growth thereafter'] },
+  { code:'LPL', name:'Liverpool', color:'#D7B505',
+    headline:'6m pax by 2030 · 5% price growth · margin −1pp from FY27/28',
+    points:['6m pax by 2030 (reflected in bookings growth trajectory)','5% price growth per year — strong pricing momentum over recent years','Margin reduced by 1pp from FY27/28 with airport negotiation'] },
+  { code:'RCA', name:'RCA', color:'#2C6B68',
+    headline:'Margin reduced to 20% from FY29/30 · steady price & volume growth',
+    points:['Margin reduced to 20% from FY29/30','Steady price and volume growth budgeted','Expecting these airports to need significant infrastructure change to grow materially'] },
+  { code:'SOU', name:'Southampton', color:'#78716c',
+    headline:'Maintaining supply & margin · small pax base',
+    points:['Hoping to maintain supply and margin with airport','Small passenger numbers — limited growth expectations budgeted'] }
+];
+
+function switchUkCtx(tab, btn) {
+  ['parking','hotels','lounges'].forEach(t => {
+    document.getElementById('ukCtx' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('#ukCtxTabs .tab-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = '';
+    b.style.color = '';
+  });
+  btn.classList.add('active');
+}
+
+(function buildUkParkingCtx() {
+  const grid = document.getElementById('ukParkingGrid');
+  const panels = document.getElementById('ukParkingPanels');
+  const inst = {};
+  UK_PARKING_CONTEXT.forEach(ap => {
+    const card = document.createElement('div');
+    card.className = 'bridge-kpi';
+    card.style.borderTopColor = ap.color;
+    card.innerHTML = `
+      <div style="font-size:0.6rem;font-weight:800;letter-spacing:0.12em;opacity:0.45;margin-bottom:0.25rem">${ap.code}</div>
+      <div class="bridge-kpi-label">${ap.name}</div>
+      <div class="bridge-kpi-vals" style="margin-top:0.35rem">${ap.headline}</div>
+      <div class="bridge-kpi-cta" style="margin-top:0.5rem">
+        <span class="bridge-kpi-cta-icon" style="color:${ap.color}">▾</span>
+        <span class="bridge-kpi-cta-close">View detail</span>
+        <span class="bridge-kpi-cta-open">Hide detail</span>
+      </div>
+    `;
+    grid.appendChild(card);
+    const panel = document.createElement('div');
+    panel.className = 'bridge-panel';
+    panel.style.borderLeftColor = ap.color;
+    panel.innerHTML = `
+      <div class="bridge-panel-header">
+        <h3 style="color:${ap.color}">${ap.name} (${ap.code}) — Commercial Context &amp; Assumptions</h3>
+      </div>
+      <div class="bridge-panel-inner" style="grid-template-columns:1fr">
+        <div class="bridge-context">
+          <h4>Key Assumptions &amp; Drivers</h4>
+          <ul class="bridge-context-list">${ap.points.map(p=>`<li>${p}</li>`).join('')}</ul>
+        </div>
+      </div>
+    `;
+    panels.appendChild(panel);
+    card.addEventListener('click', () => {
+      const opening = !panel.classList.contains('visible');
+      card.classList.toggle('open', opening);
+      panel.classList.toggle('visible', opening);
+    });
+  });
+})();
+
+function switchEuRegion(key, btn, color) {
+  document.querySelectorAll('.eu-region-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.eu-region-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = '';
+    b.style.borderColor = '';
+  });
+  document.getElementById('eu-pane-' + key).classList.add('active');
+  btn.classList.add('active');
+  btn.style.background = color;
+  btn.style.borderColor = color;
+}
+
+// ─────────────────────────────────────────────
+// EU DATA
+// ─────────────────────────────────────────────
+const EU_DATA = {
+  dach: {
+    parking:           { name:'Parking',           color:'#2A77B6', bookings:{ly:574415,bud:612648},  revenue:{ly:54573555,bud:58558177}, gmExclVAT:{ly:10906326,bud:11876966}, commission:{ly:2096432,bud:2467207}, ppc:{ly:3168272,bud:3418440}, gp:{ly:5641621,bud:5991319} },
+    hotels:            { name:'Hotels',            color:'#347E7A', bookings:{ly:51860,bud:50944},    revenue:{ly:9333044,bud:9335662},   gmExclVAT:{ly:2202844,bud:2221049},  commission:{ly:463009,bud:464274},   ppc:{ly:331035,bud:327041},   gp:{ly:1408799,bud:1429734} },
+    lounges:           { name:'Lounges',           color:'#BC5415', bookings:{ly:2965,bud:4959},      revenue:{ly:260719,bud:484302},     gmExclVAT:{ly:43641,bud:80758},      commission:{ly:22104,bud:44666},     ppc:{ly:0,bud:0},             gp:{ly:21538,bud:36091} },
+    transfers:         { name:'Transfers',         color:'#D9313A', bookings:{ly:7811,bud:18931},     revenue:{ly:782903,bud:1858071},    gmExclVAT:{ly:155015,bud:370380},    commission:{ly:93516,bud:242767},    ppc:{ly:0,bud:0},             gp:{ly:61499,bud:127613} },
+    airparksMunich:    { name:'Airparks Munich',   color:'#2A77B6', bookings:{ly:66609,bud:66810},    revenue:{ly:5835230,bud:5983123},   gmExclVAT:{ly:1204864,bud:1246310},  commission:{ly:203383,bud:194390},   ppc:{ly:425739,bud:425529},   gp:{ly:575742,bud:626391} },
+    airparksFrankfurt: { name:'Airparks Frankfurt',color:'#542E91', bookings:{ly:44530,bud:47710},    revenue:{ly:4129456,bud:4553257},   gmExclVAT:{ly:841335,bud:936937},    commission:{ly:101816,bud:115573},   ppc:{ly:376051,bud:395317},   gp:{ly:363468,bud:426047} }
+  },
+  benelux: {
+    parking:      { name:'Parking',         color:'#2A77B6', bookings:{ly:45474,bud:55996},   revenue:{ly:4140521,bud:5271086},  gmExclVAT:{ly:914540,bud:1163675},  commission:{ly:181743,bud:334127},  ppc:{ly:177044,bud:213222}, gp:{ly:555752,bud:616327} },
+    hotels:       { name:'Hotels',          color:'#347E7A', bookings:{ly:1807,bud:1953},     revenue:{ly:302023,bud:333789},    gmExclVAT:{ly:71245,bud:75268},     commission:{ly:18844,bud:20972},    ppc:{ly:4827,bud:5214},     gp:{ly:47574,bud:49082} },
+    lounges:      { name:'Lounges',         color:'#BC5415', bookings:{ly:184,bud:819},       revenue:{ly:11793,bud:57584},      gmExclVAT:{ly:1809,bud:8952},       commission:{ly:1135,bud:6446},      ppc:{ly:0,bud:0},           gp:{ly:674,bud:2506} },
+    qpAmsterdam:  { name:'QP Amsterdam',    color:'#2A77B6', bookings:{ly:69203,bud:68882},   revenue:{ly:5309150,bud:5518509},  gmExclVAT:{ly:1185602,bud:1213076}, commission:{ly:494765,bud:533096},  ppc:{ly:293909,bud:354736}, gp:{ly:396928,bud:325244} },
+    qpBrussels:   { name:'QP Brussels',     color:'#542E91', bookings:{ly:52653,bud:53043},   revenue:{ly:3298222,bud:3391248},  gmExclVAT:{ly:731009,bud:743145},   commission:{ly:218485,bud:245262},  ppc:{ly:295332,bud:316816}, gp:{ly:217192,bud:181067} },
+    qpRotterdam:  { name:'QP Rotterdam',    color:'#D9313A', bookings:{ly:8251,bud:9552},     revenue:{ly:668821,bud:783506},    gmExclVAT:{ly:147752,bud:170505},   commission:{ly:61351,bud:73588},    ppc:{ly:39492,bud:50297},   gp:{ly:46909,bud:46620} }
+  },
+  emerging: {
+    parking: { name:'Parking', color:'#2A77B6', bookings:{ly:17290,bud:44973}, revenue:{ly:1320768,bud:3644189}, gmExclVAT:{ly:276660,bud:776630}, commission:{ly:65837,bud:330470}, ppc:{ly:39404,bud:195521}, gp:{ly:171419,bud:250639} },
+    hotels:  { name:'Hotels',  color:'#347E7A', bookings:{ly:16,bud:52},       revenue:{ly:2468,bud:9992},       gmExclVAT:{ly:459,bud:1386},      commission:{ly:120,bud:362},      ppc:{ly:0,bud:0},          gp:{ly:339,bud:1024} },
+    lounges: { name:'Lounges', color:'#BC5415', bookings:{ly:1526,bud:2182},   revenue:{ly:129855,bud:210737},   gmExclVAT:{ly:27856,bud:44260},   commission:{ly:17356,bud:29279},  ppc:{ly:0,bud:0},          gp:{ly:10499,bud:14980} }
+  }
+};
+
+// ─────────────────────────────────────────────
+// BUILD EU REGION P&L TABLES
+// ─────────────────────────────────────────────
+function buildEuTable(tableId, regionData) {
+  const table = document.getElementById(tableId);
+  const products = Object.values(regionData);
+  const totalLyGP = products.reduce((s, p) => s + p.gp.ly, 0);
+  const totalBudGP = products.reduce((s, p) => s + p.gp.bud, 0);
+
+  const pctChange = (bud, ly) => {
+    if (!ly) return '—';
+    const p = ((bud - ly) / Math.abs(ly)) * 100;
+    return `<span class="pill ${p > 0.1 ? 'up' : p < -0.1 ? 'down' : 'flat'}">${p >= 0 ? '+' : ''}${p.toFixed(1)}%</span>`;
+  };
+
+  let html = `<thead><tr>
+    <th>Product</th>
+    <th>LY Bookings</th><th>Bud Bookings</th>
+    <th>LY Revenue</th><th>Bud Revenue</th>
+    <th>LY GM% excl.</th><th>Bud GM% excl.</th>
+    <th>LY GP</th><th>Bud GP</th><th>GP Change</th>
+  </tr></thead><tbody>`;
+
+  products.forEach(p => {
+    const lyGMpct = p.revenue.ly > 0 ? (p.gmExclVAT.ly / p.revenue.ly * 100).toFixed(1) + '%' : '—';
+    const budGMpct = p.revenue.bud > 0 ? (p.gmExclVAT.bud / p.revenue.bud * 100).toFixed(1) + '%' : '—';
+    html += `<tr>
+      <td><span class="product-dot" style="background:${p.color}"></span>${p.name}</td>
+      <td class="num-ly">${p.bookings.ly.toLocaleString()}</td>
+      <td class="num-bud">${p.bookings.bud.toLocaleString()}</td>
+      <td class="num-ly">${fmt(p.revenue.ly)}</td>
+      <td class="num-bud">${fmt(p.revenue.bud)}</td>
+      <td class="num-ly">${lyGMpct}</td>
+      <td class="num-bud">${budGMpct}</td>
+      <td class="num-ly">${fmt(p.gp.ly)}</td>
+      <td class="num-bud">${fmt(p.gp.bud)}</td>
+      <td>${pctChange(p.gp.bud, p.gp.ly)}</td>
+    </tr>`;
+  });
+
+  // Total row
+  const lyRevTotal = products.reduce((s,p) => s+p.revenue.ly, 0);
+  const budRevTotal = products.reduce((s,p) => s+p.revenue.bud, 0);
+  const lyGMTotal = products.reduce((s,p) => s+p.gmExclVAT.ly, 0);
+  const budGMTotal = products.reduce((s,p) => s+p.gmExclVAT.bud, 0);
+  const lyGMpct = (lyGMTotal/lyRevTotal*100).toFixed(1)+'%';
+  const budGMpct = (budGMTotal/budRevTotal*100).toFixed(1)+'%';
+  html += `<tr class="total-row">
+    <td>Total</td>
+    <td>${products.reduce((s,p)=>s+p.bookings.ly,0).toLocaleString()}</td>
+    <td>${products.reduce((s,p)=>s+p.bookings.bud,0).toLocaleString()}</td>
+    <td>${fmt(lyRevTotal)}</td><td>${fmt(budRevTotal)}</td>
+    <td>${lyGMpct}</td><td>${budGMpct}</td>
+    <td>${fmt(totalLyGP)}</td><td>${fmt(totalBudGP)}</td>
+    <td>${pctChange(totalBudGP, totalLyGP)}</td>
+  </tr></tbody>`;
+
+  table.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+// EU CHARTS (initialised on first view)
+// ─────────────────────────────────────────────
+function initEuCharts() {
+  // ── Region config + totals ──
+  const EU_REGIONS = [
+    { key: 'dach',     name: 'DACH',     color: '#D9313A' },
+    { key: 'benelux',  name: 'BENELUX',  color: '#542E91' },
+    { key: 'emerging', name: 'Emerging', color: '#347E7A' }
+  ];
+  function regionTotals(rd) {
+    const prods = Object.values(rd);
+    const sum = f => prods.reduce((s,p) => s + f(p), 0);
+    return {
+      bookings:  { ly: sum(p=>p.bookings.ly),   bud: sum(p=>p.bookings.bud)   },
+      revenue:   { ly: sum(p=>p.revenue.ly),    bud: sum(p=>p.revenue.bud)    },
+      gmExclVAT: { ly: sum(p=>p.gmExclVAT.ly),  bud: sum(p=>p.gmExclVAT.bud)  },
+      commission:{ ly: sum(p=>p.commission.ly), bud: sum(p=>p.commission.bud) },
+      ppc:       { ly: sum(p=>p.ppc.ly),        bud: sum(p=>p.ppc.bud)        },
+      gp:        { ly: sum(p=>p.gp.ly),         bud: sum(p=>p.gp.bud)         }
+    };
+  }
+  const RT = {};
+  EU_REGIONS.forEach(r => { RT[r.key] = regionTotals(EU_DATA[r.key]); });
+
+  // ── GP Growth chart ──
+  const gpGrowths = EU_REGIONS.map(r => RT[r.key].gp.bud - RT[r.key].gp.ly);
+  new Chart(document.getElementById('euGpGrowthChart'), {
+    type: 'bar',
+    data: {
+      labels: EU_REGIONS.map(r => r.name),
+      datasets: [{ data: gpGrowths, backgroundColor: gpGrowths.map((v,i) => v >= 0 ? EU_REGIONS[i].color : '#D9313A'), borderRadius: 6, borderSkipped: false }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) + ' (' + pctChange(RT[EU_REGIONS[ctx.dataIndex].key].gp.bud, RT[EU_REGIONS[ctx.dataIndex].key].gp.ly) + ')' } } },
+      scales: { x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => fmt(v) } }, y: { grid: { display: false } } }
+    }
+  });
+
+  // ── Revenue Growth chart ──
+  const revGrowths = EU_REGIONS.map(r => RT[r.key].revenue.bud - RT[r.key].revenue.ly);
+  new Chart(document.getElementById('euRevGrowthChart'), {
+    type: 'bar',
+    data: {
+      labels: EU_REGIONS.map(r => r.name),
+      datasets: [{ data: revGrowths, backgroundColor: revGrowths.map((v,i) => v >= 0 ? EU_REGIONS[i].color : '#D9313A'), borderRadius: 6, borderSkipped: false }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + fmt(ctx.raw) + ' (' + pctChange(RT[EU_REGIONS[ctx.dataIndex].key].revenue.bud, RT[EU_REGIONS[ctx.dataIndex].key].revenue.ly) + ')' } } },
+      scales: { x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => fmt(v) } }, y: { grid: { display: false } } }
+    }
+  });
+
+  // ── Bridge waterfall ──
+  const lyGP = 9519953, budGP = 10124685;
+  const revenueEffect = 2100000, marginEffect = 165000, commHead = -1062580, ppcHead = -597638;
+  const s0 = lyGP, s1 = s0+revenueEffect, s2 = s1+marginEffect, s3 = s2+commHead;
+  new Chart(document.getElementById('euBridgeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['LY GP', 'Volume &\nRevenue', 'Margin\nImprovement', 'Commission\nInvestment', 'PPC\nInvestment', 'Budget GP'],
+      datasets: [{ data: [[0,lyGP],[s0,s0+revenueEffect],[s1,s1+marginEffect],[s2,s2+commHead],[s3,s3+ppcHead],[0,budGP]], backgroundColor: ['#3a1f6b','#347E7A','#347E7A','#D9313A','#D9313A','#542E91'], borderRadius: 5, borderSkipped: false }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label: ctx => { const [lo,hi]=ctx.raw; if(lo===0) return ' £'+(hi/1e6).toFixed(2)+'m'; const d=hi-lo; return ' '+(d>=0?'+':'')+fmt(d); }}} },
+      scales: { x:{grid:{display:false},ticks:{font:{size:10}}}, y:{grid:{color:'#f1f5f9'},ticks:{callback:v=>'£'+(v/1e6).toFixed(1)+'m'},min:8500000} }
+    }
+  });
+
+  // ── Bridge KPI cards + panels ──
+  const euBridgeGrid = document.getElementById('euBridgeKpiGrid');
+  const euBridgePanels = document.getElementById('euBridgePanels');
+  const euChartInst = {};
+  EU_BRIDGE_KPIS.forEach(kpi => {
+    const card = document.createElement('div');
+    card.className = 'bridge-kpi';
+    card.style.borderTopColor = kpi.color;
+    card.innerHTML = `
+      <div class="bridge-kpi-label">${kpi.title}</div>
+      <div class="bridge-kpi-change" style="color:${kpi.color}">${kpi.changeLabel}</div>
+      <div class="bridge-kpi-vals">${kpi.subLabel}</div>
+      <span class="bridge-kpi-impact ${kpi.impactClass}">${kpi.impact}</span>
+      <div class="bridge-kpi-cta">
+        <span class="bridge-kpi-cta-icon" style="color:${kpi.color}">▾</span>
+        <span class="bridge-kpi-cta-close">Explore drivers</span>
+        <span class="bridge-kpi-cta-open">Hide details</span>
+      </div>
+    `;
+    euBridgeGrid.appendChild(card);
+    const panel = document.createElement('div');
+    panel.className = 'bridge-panel';
+    panel.style.borderLeftColor = kpi.color;
+    const cid = 'eu-bc-' + kpi.key;
+    panel.innerHTML = `
+      <div class="bridge-panel-header">
+        <h3 style="color:${kpi.color}">${kpi.title} — Detail &amp; Context</h3>
+        <span class="pill ${kpi.impactClass==='pos'?'up':'down'}">${kpi.impact}</span>
+      </div>
+      <div class="bridge-panel-inner">
+        <div>
+          <div style="font-size:.85rem;font-weight:700;color:#374151;margin-bottom:1rem">${kpi.chartTitle}</div>
+          <div style="height:230px"><canvas id="${cid}"></canvas></div>
+        </div>
+        <div class="bridge-context">
+          <h4>Key Assumptions &amp; Drivers</h4>
+          <ul class="bridge-context-list">${kpi.context.map(c=>`<li>${c}</li>`).join('')}</ul>
+          <div class="bridge-impact ${kpi.impactClass}">
+            <span>${kpi.impactClass==='pos'?'▲':'▼'}</span>
+            <span>Estimated GP impact: <strong>${kpi.impact}</strong></span>
+          </div>
+        </div>
+      </div>
+    `;
+    euBridgePanels.appendChild(panel);
+    card.addEventListener('click', () => {
+      const opening = !panel.classList.contains('visible');
+      card.classList.toggle('open', opening);
+      panel.classList.toggle('visible', opening);
+      if (opening && !euChartInst[kpi.key]) {
+        const labels = EU_REGIONS.map(r => r.name);
+        const colors = EU_REGIONS.map(r => r.color);
+        const lyDs  = data => ({ label:'Last Year', data, backgroundColor: colors.map(c=>c+'55'), borderColor: colors, borderWidth: 2, borderRadius: 4 });
+        const budDs = data => ({ label:'Budget',    data, backgroundColor: colors, borderRadius: 4, borderWidth: 0 });
+        let datasets, yTick;
+        if (kpi.chartType === 'euBookings') {
+          datasets = [ lyDs(EU_REGIONS.map(r=>RT[r.key].bookings.ly)), budDs(EU_REGIONS.map(r=>RT[r.key].bookings.bud)) ];
+          yTick = v => v>=1e6?(v/1e6).toFixed(1)+'m':Math.round(v/1000)+'k';
+        } else if (kpi.chartType === 'euMargin') {
+          datasets = [ lyDs(EU_REGIONS.map(r=>+(RT[r.key].gmExclVAT.ly/RT[r.key].revenue.ly*100).toFixed(2))), budDs(EU_REGIONS.map(r=>+(RT[r.key].gmExclVAT.bud/RT[r.key].revenue.bud*100).toFixed(2))) ];
+          yTick = v => v.toFixed(1)+'%';
+        } else if (kpi.chartType === 'euCommission') {
+          datasets = [ lyDs(EU_REGIONS.map(r=>RT[r.key].commission.ly)), budDs(EU_REGIONS.map(r=>RT[r.key].commission.bud)) ];
+          yTick = v => fmt(v);
+        } else if (kpi.chartType === 'euPpc') {
+          datasets = [ lyDs(EU_REGIONS.map(r=>RT[r.key].ppc.ly)), budDs(EU_REGIONS.map(r=>RT[r.key].ppc.bud)) ];
+          yTick = v => fmt(v);
+        }
+        euChartInst[kpi.key] = new Chart(document.getElementById(cid), {
+          type: 'bar',
+          data: { labels, datasets },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position:'bottom', labels:{font:{size:10},boxWidth:10,padding:10} } },
+            scales: { x:{grid:{display:false},ticks:{font:{size:10}}}, y:{grid:{color:'#f1f5f9'},ticks:{callback:yTick,font:{size:10}},suggestedMin:0} }
+          }
+        });
+      }
+    });
+  });
+
+  // ── Distribution Spend chart ──
+  const totalRevBud = EU_REGIONS.reduce((s,r)=>s+RT[r.key].revenue.bud, 0);
+  new Chart(document.getElementById('euDistSpendChart'), {
+    type: 'bar',
+    data: {
+      labels: EU_REGIONS.map(r=>r.name),
+      datasets: [
+        { label:'Commission', data:EU_REGIONS.map(r=>RT[r.key].commission.bud), backgroundColor:EU_REGIONS.map(r=>r.color), borderRadius:4 },
+        { label:'PPC',        data:EU_REGIONS.map(r=>RT[r.key].ppc.bud),        backgroundColor:EU_REGIONS.map(r=>r.color+'70'), borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}, tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmt(ctx.raw)}} },
+      scales: { x:{stacked:true,grid:{display:false}}, y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{callback:v=>fmt(v)}} }
+    }
+  });
+
+  // ── Distribution Detail table ──
+  const ddBody = document.getElementById('euDistDetailBody');
+  EU_REGIONS.forEach(r => {
+    const rt = RT[r.key];
+    const totalDist = rt.commission.bud + rt.ppc.bud;
+    const distPct = rt.revenue.bud > 0 ? (totalDist/rt.revenue.bud*100).toFixed(1)+'%' : '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="product-dot" style="background:${r.color}"></span>${r.name}</td>
+      <td class="num-ly">${fmt(rt.commission.ly)}</td><td class="num-bud">${fmt(rt.commission.bud)}</td>
+      <td class="num-ly">${fmt(rt.ppc.ly)}</td><td class="num-bud">${fmt(rt.ppc.bud)}</td>
+      <td class="num-bud">${fmt(totalDist)}</td><td>${distPct}</td>
+    `;
+    ddBody.appendChild(tr);
+  });
+  const commLyT =EU_REGIONS.reduce((s,r)=>s+RT[r.key].commission.ly,0);
+  const commBudT=EU_REGIONS.reduce((s,r)=>s+RT[r.key].commission.bud,0);
+  const ppcLyT  =EU_REGIONS.reduce((s,r)=>s+RT[r.key].ppc.ly,0);
+  const ppcBudT =EU_REGIONS.reduce((s,r)=>s+RT[r.key].ppc.bud,0);
+  const totalDistT=commBudT+ppcBudT;
+  const trDTotal=document.createElement('tr'); trDTotal.className='total-row';
+  trDTotal.innerHTML=`<td>Total</td><td>${fmt(commLyT)}</td><td>${fmt(commBudT)}</td><td>${fmt(ppcLyT)}</td><td>${fmt(ppcBudT)}</td><td>${fmt(totalDistT)}</td><td>${(totalDistT/totalRevBud*100).toFixed(2)}%</td>`;
+  ddBody.appendChild(trDTotal);
+
+  // ── Region KPI cards ──
+  const bkgFmt = v => v>=1e6?(v/1e6).toFixed(2)+'m':Math.round(v/1000)+'k';
+  EU_REGIONS.forEach(r => {
+    const rt = RT[r.key];
+    const el = document.getElementById('eu-kpi-' + r.key);
+    if (!el) return;
+    const gmPctLy  = (rt.gmExclVAT.ly  / rt.revenue.ly  * 100).toFixed(2);
+    const gmPctBud = (rt.gmExclVAT.bud / rt.revenue.bud * 100).toFixed(2);
+    const gpBkgLy  = (rt.gp.ly  / rt.bookings.ly ).toFixed(2);
+    const gpBkgBud = (rt.gp.bud / rt.bookings.bud).toFixed(2);
+    const distLy   = rt.commission.ly  + rt.ppc.ly;
+    const distBud  = rt.commission.bud + rt.ppc.bud;
+    const distPctLy  = (distLy  / rt.revenue.ly  * 100).toFixed(2);
+    const distPctBud = (distBud / rt.revenue.bud * 100).toFixed(2);
+    const div = document.createElement('div');
+    div.className = 'product-kpis';
+    div.innerHTML = `
+      <div class="prod-kpi"><div class="prod-kpi-label">Bookings</div><div class="prod-kpi-val">${bkgFmt(rt.bookings.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${bkgFmt(rt.bookings.ly)}</span>&nbsp;${pill(rt.bookings.bud,rt.bookings.ly)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Revenue</div><div class="prod-kpi-val">${fmt(rt.revenue.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${fmt(rt.revenue.ly)}</span>&nbsp;${pill(rt.revenue.bud,rt.revenue.ly)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">GM% (excl. VAT)</div><div class="prod-kpi-val">${gmPctBud}%</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${gmPctLy}%</span>&nbsp;${pill(parseFloat(gmPctBud),parseFloat(gmPctLy))}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Gross Profit</div><div class="prod-kpi-val">${fmt(rt.gp.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${fmt(rt.gp.ly)}</span>&nbsp;${pill(rt.gp.bud,rt.gp.ly)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Commission</div><div class="prod-kpi-val">${fmt(rt.commission.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${fmt(rt.commission.ly)}</span>&nbsp;${pill(rt.commission.bud,rt.commission.ly,true)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">PPC</div><div class="prod-kpi-val">${fmt(rt.ppc.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${fmt(rt.ppc.ly)}</span>&nbsp;${pill(rt.ppc.bud,rt.ppc.ly,true)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">GP Per Booking</div><div class="prod-kpi-val">£${gpBkgBud}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY £${gpBkgLy}</span>&nbsp;${pill(parseFloat(gpBkgBud),parseFloat(gpBkgLy))}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Dist % of Revenue</div><div class="prod-kpi-val">${distPctBud}%</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${distPctLy}%</span>&nbsp;${pill(parseFloat(distPctBud),parseFloat(distPctLy),true)}</div></div>
+    `;
+    el.appendChild(div);
+  });
+
+  // ── P&L tables ──
+  buildEuTable('dachTable', EU_DATA.dach);
+  buildEuTable('beneluxTable', EU_DATA.benelux);
+  buildEuTable('emergingTable', EU_DATA.emerging);
+}
+
+// ─────────────────────────────────────────────
+// EU BRIDGE KPIs
+// ─────────────────────────────────────────────
+const EU_BRIDGE_KPIS = [
+  {
+    key: 'euVolume',
+    title: 'Volume & Revenue',
+    subtitle: 'Booking growth and revenue uplift driving GP',
+    color: '#347E7A',
+    changeLabel: '+95k bookings · +11% revenue',
+    subLabel: 'LY 944k → Budget 1.04m · LY £90.1m → £100.0m',
+    impact: '+~£2.1m GP',
+    impactClass: 'pos',
+    chartTitle: 'Bookings by Region — LY vs Budget',
+    chartType: 'euBookings',
+    context: [
+      'DACH Parking: 5% base growth + new Berlin property (Apr 27: 43–54k bookings pa)',
+      'DACH Transfers: +35% direct growth + 18k new partner bookings — GP up +107%',
+      'BENELUX Parking (excl. QP): +23% volume as new sites ramp up',
+      'Emerging Parking: +160% growth as new markets (France etc.) mature',
+      'DACH Lounges: +30% volume Apr–Aug FY27 as products return to market',
+      'DACH Hotels: +1.5% declining to +0.5% — TUI-driven mix shift normalising',
+      'Overall EU: +95k bookings (+10.0%); revenue +£9.9m (+11.0%)'
+    ]
+  },
+  {
+    key: 'euMargin',
+    title: 'Margin Improvement',
+    subtitle: 'GM% improvement across regions',
+    color: '#BC5415',
+    changeLabel: '+16bps GM% (excl. VAT)',
+    subLabel: 'LY 20.77% → Budget 20.93%',
+    impact: '+~£165k GP',
+    impactClass: 'pos',
+    chartTitle: 'GM% (excl. VAT) by Region — LY vs Budget',
+    chartType: 'euMargin',
+    context: [
+      'DACH: +23bps — DACH Parking supplier cost improvement; DACH Lounges 2–3pp margin gain',
+      'Emerging: +21bps — improving product mix as Parking matures in new markets',
+      'BENELUX: −24bps — QP sites (Amsterdam/Brussels) diluting regional margin as they scale',
+      'DACH Transfers: margin improving as HTX supplier cost corrected to 23%',
+      'Small absolute impact (£165k) despite positive rate movement — EU base is smaller scale than UK',
+      'Distribution investment (commission/PPC) more than offsets the margin rate improvement in net GP terms'
+    ]
+  },
+  {
+    key: 'euCommission',
+    title: 'Commission Investment',
+    subtitle: 'Rising commission as intermediary channels expand',
+    color: '#D9313A',
+    changeLabel: '+£1.06m commission',
+    subLabel: 'LY £4.04m → Budget £5.10m (+26.3%)',
+    impact: '-£1.06m GP',
+    impactClass: 'neg',
+    chartTitle: 'Commission by Region — LY vs Budget (£)',
+    chartType: 'euCommission',
+    context: [
+      'Emerging: +£277k — new market development with high intermediary share (commission-heavy)',
+      'DACH: +£549k — DACH Parking (+£371k intermediary growth), DACH Transfers (+£149k from new partner mix)',
+      'BENELUX: +£237k — QP Amsterdam (+£38k) and QP Brussels (+£27k) intermediary expansion',
+      'DACH Transfers: commission % rises as intermediary mix grows from 26% to 39% of volume',
+      'Emerging Parking: commission rising sharply as channel development investment front-loads costs',
+      'This is intentional: EU strategy is "grow now, optimise later" — commission spend precedes the GP return'
+    ]
+  },
+  {
+    key: 'euPpc',
+    title: 'PPC Investment',
+    subtitle: 'Increased PPC supporting volume growth in EU markets',
+    color: '#542E91',
+    changeLabel: '+£551k PPC',
+    subLabel: 'LY £5.15m → Budget £5.70m (+10.7%)',
+    impact: '-£551k GP',
+    impactClass: 'neg',
+    chartTitle: 'PPC by Region — LY vs Budget (£)',
+    chartType: 'euPpc',
+    context: [
+      'Emerging: +£156k — Emerging Parking PPC investment growing heavily as new markets activate',
+      'DACH: +£265k — DACH Parking (+£250k) PPC expansion; Frankfurt (+£19k)',
+      'BENELUX: +£130k — QP Amsterdam (+£61k), QP Brussels (+£22k), QP Rotterdam (+£11k), Parking (+£36k)',
+      'Emerging PPC-to-revenue ratio: 2.7% LY → 5.1% Bud — significant front-loaded investment',
+      'EU PPC strategy: invest ahead of volume — markets require higher % to establish brand and reach',
+      'Unlike UK, EU PPC investment is primarily market development, not efficiency optimisation'
+    ]
+  }
+];
+
+// ─────────────────────────────────────────────
+// EU CONTEXT DATA
+// ─────────────────────────────────────────────
+const EU_CONTEXT = {
+  dach: {
+    parking: {
+      name: 'DACH Parking',
+      headline: "New Berlin property (Apr 27: 43–54k bkgs pa) and annualised trading group growth — biggest EU volume story in FY27",
+      sections: [
+        { title: "Volume", color: "#2A77B6", items: [
+          "5% base growth Nov–Feb until FY28, reducing to 3% thereafter; 1.5% shoulder periods; flat peak months (Jul & Aug)",
+          "Annualised trading group growth: Booking.com, Sunweb, Check24",
+          "New property: Berlin from April 27 — 43k–54k bookings per annum",
+          "2 new partnerships (75% win probability) — ~11k bookings per annum"
+        ]},
+        { title: "Price & Discounts", color: "#347E7A", items: [
+          "+6% sell price inflation remainder of FY26 (current run rate); +2% peak FY27 reducing to flat",
+          "Discounts: no change; Margin: no change; 18.9% VAT (weighted DACH average)"
+        ]},
+        { title: "Commission & PPC", color: "#2A77B6", items: [
+          "Average intermediary commission ~11.3% modelled forward",
+          "PPC: no change; Cancellation rate: increasing trend, carried forward"
+        ]}
+      ]
+    },
+    hotels: {
+      name: 'DACH Hotels',
+      headline: "TUI-driven mix shift: 15% intermediary growth / 5% retail decline in H2 FY26, gradually normalising in FY27",
+      sections: [
+        { title: "Volume & Price", color: "#347E7A", items: [
+          "15% intermediary growth / 5% retail decline for remainder of FY26 — both largely TUI-driven",
+          "Outer year growth: 1.5% declining to 0.5% — reflects gradually improving market conditions",
+          "3% price inflation YTD annualised to end FY26; 2% market rate inflation thereafter",
+          "Discounts, Margin, Commission, PPC, Canx rate: no change; 18.9% VAT"
+        ]}
+      ]
+    },
+    lounges: {
+      name: 'DACH Lounges',
+      headline: "+30% volume Apr–Aug FY27 with 2–3pp margin improvement — small product, accelerating",
+      sections: [
+        { title: "Volume", color: "#BC5415", items: [
+          "Flat volume for remainder of FY26",
+          "+30% volume growth April–August FY27, reducing to +5% for remainder of FY27",
+          "+5% FY28, reducing to +2% outer years"
+        ]},
+        { title: "Margin & Assumptions", color: "#347E7A", items: [
+          "Margin: 2–3pp improvement across all channels; 18.9% VAT",
+          "Price: no change (no obvious trend); Discounts, Commission, PPC, Canx: no change"
+        ]}
+      ]
+    },
+    transfers: {
+      name: 'DACH Transfers',
+      headline: "+35% direct growth plus 18k new partner bookings — standout DACH story at +107% GP growth",
+      sections: [
+        { title: "Volume", color: "#D9313A", items: [
+          "FY26 forecast GP: €67k (+€1k vs F3 forecast of €66k)",
+          "FY27 base volume: +35% growth in direct channel",
+          "New partners: +18k bookings FY27; +7k bookings FY28"
+        ]},
+        { title: "Price & Mix", color: "#347E7A", items: [
+          "2% base price inflation",
+          "Significant intermediary mix growth to 39% (from 26%) — drives overall price parity YoY (−0.27% net)",
+          "Discounts: +0.01pp (2% overall) from direct email opportunity"
+        ]},
+        { title: "Margin & Commission", color: "#2A77B6", items: [
+          "HTX supplier cost corrected to 23%",
+          "Overall commission % +9% due to significant R&I growth mix change",
+          "Retail expected c13.8%; Intermediary expected c14%; PPC: N/A; Canx: no change"
+        ]}
+      ]
+    },
+    airparksMunich: {
+      name: 'Airparks Munich',
+      headline: "APS stay-based forecast: +3.5% volume, +2.5% price per annum — supplier cost corrected to 73%",
+      sections: [
+        { title: "Volume & Price", color: "#2A77B6", items: [
+          "Volume reverse-engineered to APS stay-based forecast (~+3.5% pa); duration flat",
+          "+2.5% sell price inflation per annum",
+          "Discounts normalised: Direct 1.5%, Retail/Intermediary 0.5%"
+        ]},
+        { title: "Margin & Operations", color: "#347E7A", items: [
+          "Supplier cost corrected to 73% (was incorrect in system); 19% VAT",
+          "Commission, PPC, Canx rate: no change"
+        ]}
+      ]
+    },
+    airparksFrankfurt: {
+      name: 'Airparks Frankfurt',
+      headline: "APS stay-based forecast: +3% volume, +2% price per annum — supplier cost corrected to 73%",
+      sections: [
+        { title: "Volume & Price", color: "#542E91", items: [
+          "Volume reverse-engineered to APS stay-based forecast (~+3% pa); duration flat",
+          "+2% sell price inflation per annum",
+          "Discounts normalised: Direct 2%, Retail 1%, Intermediary 3%"
+        ]},
+        { title: "Margin & Operations", color: "#347E7A", items: [
+          "Supplier cost corrected to 73% (was incorrect in system); 19% VAT",
+          "Commission, PPC, Canx rate: no change"
+        ]}
+      ]
+    }
+  },
+  benelux: {
+    parking: {
+      name: 'BENELUX Parking',
+      headline: "15% peak growth reflecting QP capacity overflow + Lastminute.com 7.2k — strong distribution expansion",
+      sections: [
+        { title: "Volume", color: "#2A77B6", items: [
+          "2% off-peak growth (→ 1% outer years); 15% peak growth FY26/27 (→ 2% outer years)",
+          "Growth reflects QP sites reaching capacity — overspill into third-party products",
+          "Base market: 0–2% BENELUX; Booking.com annualised: 1.8k pa",
+          "8 new partnerships (75% win): Freebird +396, WWIS +9, Dreamlake +145, Dan Air +88, Corendon +317, Love Holidays +266, Parkbee +550, Lastminute.com +7,200 — total ~9k pa"
+        ]},
+        { title: "Price & Discounts", color: "#347E7A", items: [
+          "2% sell price inflation peak months; off-peak flat",
+          "Retail discounts removed; intermediary normalised to 4.5%",
+          "Margin: no change; 21% VAT"
+        ]},
+        { title: "Commission & PPC", color: "#2A77B6", items: [
+          "Retail commission ~13.0%; Intermediary ~12.0% modelled forward",
+          "PPC: increased CpB inline with recent trends/run rate; Canx: no change"
+        ]}
+      ]
+    },
+    hotels: {
+      name: 'BENELUX Hotels',
+      headline: "5% volume growth FY27 after strong +15% H2 FY26 run rate — all other assumptions unchanged",
+      sections: [
+        { title: "Volume & Assumptions", color: "#347E7A", items: [
+          "15% volume growth for remainder of FY26 (current run rate)",
+          "5% volume growth in FY27, reducing to 2% in outer years",
+          "Price, Discounts, Margin, Commission, PPC, Canx: no change; 21% VAT"
+        ]}
+      ]
+    },
+    lounges: {
+      name: 'BENELUX Lounges',
+      headline: "Very small volumes (~200 bkgs pa) — included for completeness, 2% growth all years",
+      sections: [
+        { title: "Assumptions", color: "#BC5415", items: [
+          "Small base (~200 bookings pa) — included for completeness; 2% growth all years",
+          "Price, Discounts, Margin, Commission, PPC, Canx: no change; 21% VAT; no PPC costs"
+        ]}
+      ]
+    },
+    qpAmsterdam: {
+      name: 'QP Amsterdam',
+      headline: "Capacity-constrained — TUI loss 1.5k from Oct 26, offset by 5–15% peak price inflation and new partnerships",
+      riskFlag: "TUI EU: losing Quick Parking Amsterdam from October 26 — 1.5k bookings pa headwind. 7 new partnerships at 75% win probability are not fully guaranteed.",
+      sections: [
+        { title: "Volume", color: "#2A77B6", items: [
+          "Capacity constrained: peak months downturned (Valet Company = 400 spaces max)",
+          "Base market 0–2% Amsterdam; TUI loss −1.5k pa from Oct 26; Booking.com 480 pa",
+          "7 new partnerships (75% win): Freebird +575 (Apr 26), WWIS +13 (Mar 26), Dreamlake +211 (Sep 26), Dan Air +128 (Oct 26), Corendon +460 (Nov 26), Love Holidays +386 (Nov 26), Parkbee +799 (Jul 26) — total 2.5k pa"
+        ]},
+        { title: "Price", color: "#347E7A", items: [
+          "5–15% sell price inflation for peak months FY26/27 — larger increases where volumes lowered for capacity management",
+          "Outer years: 1% off-peak / 3% peak; reflects dedicated yielding resource",
+          "Discounts: retail discounts removed (reflects loss of ANWB)"
+        ]},
+        { title: "Commission & PPC", color: "#2A77B6", items: [
+          "Average retail commission ~16.5% modelled forward; 21% VAT; Canx: no change",
+          "PPC: increased CpB inline with Revenue Burn Strategy (off-peak months)"
+        ]}
+      ]
+    },
+    qpBrussels: {
+      name: 'QP Brussels',
+      headline: "TUI loss 1.5k bookings + capacity constraints, offset by +10% peak price inflation and new partnerships",
+      riskFlag: "TUI EU: losing Quick Parking Brussels from October 26 — 1.5k bookings pa headwind.",
+      sections: [
+        { title: "Volume", color: "#542E91", items: [
+          "Capacity constrained; flat 2% volume growth in outer years",
+          "TUI EU: losing QP from Oct 26 (−1.5k pa); Booking.com 420 pa",
+          "7 new partnerships (75% win): Freebird +456, WWIS +10, Dreamlake +167, Dan Air +101, Corendon +365, Love Holidays +306, Parkbee +634 — total ~2k pa"
+        ]},
+        { title: "Price & Discounts", color: "#347E7A", items: [
+          "+10% sell price inflation peak months FY26/27; outer years: 1% at >55% occupancy / 2% at >70% occupancy",
+          "Retail discounts removed; direct 1%, intermediary 3.5%"
+        ]},
+        { title: "Commission & PPC", color: "#2A77B6", items: [
+          "Retail ~18.0%; Intermediary ~15.5% modelled forward; 21% VAT; Canx: no change",
+          "PPC: increased CpB (Revenue Burn Strategy, off-peak)"
+        ]}
+      ]
+    },
+    qpRotterdam: {
+      name: 'QP Rotterdam',
+      headline: "1–3% market growth, capacity-constrained peaks — TUI loss 200 bookings from Oct 26",
+      riskFlag: "TUI EU: losing Quick Parking Rotterdam from October 26 — 200 bookings pa headwind.",
+      sections: [
+        { title: "Volume", color: "#D9313A", items: [
+          "1–3% base market growth (Rotterdam); peak months downturned in outer years (capacity)",
+          "TUI EU: losing QP from Oct 26 (−200 pa)",
+          "7 new partnerships (75% win): Freebird +72, WWIS +2, Dreamlake +27, Dan Air +16, Corendon +58, Love Holidays +48, Parkbee +100 — total 323 pa"
+        ]},
+        { title: "Price & Discounts", color: "#347E7A", items: [
+          "+3% sell price inflation peak FY26/27; outer years: 1% off-peak / 2% peak",
+          "Retail discounts removed; direct 1%, intermediary 8.5%"
+        ]},
+        { title: "Commission & PPC", color: "#2A77B6", items: [
+          "Retail ~16.5%; Intermediary ~11.5% modelled forward; 21% VAT; Canx: no change",
+          "PPC: increased CpB (Revenue Burn Strategy, off-peak)"
+        ]}
+      ]
+    }
+  },
+  emerging: {
+    parking: {
+      name: 'Emerging Parking',
+      headline: "Scaling from low base — €15/bkg PPC investment FY27 driving growth; 3 new European sites from FY28",
+      sections: [
+        { title: "Volume", color: "#2A77B6", items: [
+          "2% base growth inline with market/passenger volumes",
+          "PPC scaling: 20% impression share / 5% CTR FY27 → 60% share by FY30",
+          "SEO scaling: 1% click share FY27 → 5% by FY30 (initial low rankings)",
+          "3 new European sites FY28–30: 40k bookings pa each",
+          "8 new partnerships (75% win): ~50k bookings pa total"
+        ]},
+        { title: "Price & Discounts", color: "#347E7A", items: [
+          "2% base sell price inflation all years; normalised discounts: Direct 2%, Retail/Intermediary 1%",
+          "Margin: no change; 20.9% VAT (weighted EU average)"
+        ]},
+        { title: "PPC Investment", color: "#D9313A", items: [
+          "Significantly elevated PPC — reflects inefficiency of operating in new markets",
+          "CpB: €15 FY27 → €10 FY28 → €7 FY29 (costs provided by Annette)",
+          "High PPC cost is primary reason GP growth lags revenue growth in Emerging",
+          "Commission: no change; Canx: anomalous months normalised"
+        ]}
+      ]
+    },
+    hotels: {
+      name: 'Emerging Hotels',
+      headline: "Simple 2% base volume growth — minimal scale, all assumptions unchanged",
+      sections: [
+        { title: "Assumptions", color: "#347E7A", items: [
+          "2% base volume growth all months/years; Price, Discounts, Margin, Commission: no change",
+          "20.9% VAT; no PPC costs; Canx: no change"
+        ]}
+      ]
+    },
+    lounges: {
+      name: 'Emerging Lounges',
+      headline: "200% growth for remainder of FY26 (run rate), normalising to 2% from FY27",
+      sections: [
+        { title: "Assumptions", color: "#BC5415", items: [
+          "200% volume growth for remainder of FY26 (current run rate)",
+          "2% base volume growth from FY27 onwards",
+          "Price, Discounts, Margin, Commission: no change; 20.9% VAT; no PPC costs; Canx: no change"
+        ]}
+      ]
+    }
+  }
+};
+
+// ─────────────────────────────────────────────
+// INSURANCE DATA
+// ─────────────────────────────────────────────
+const INS_CHANNELS = [
+  { key: 'direct',          name: 'Direct',          color: '#2A77B6' },
+  { key: 'partnerReferral', name: 'Partner Referral', color: '#347E7A' },
+  { key: 'aggregator',      name: 'Aggregator',       color: '#BC5415' },
+  { key: 'renewals',        name: 'Renewals',         color: '#542E91' }
+];
+const INS_DATA = {
+  direct:          { policies:{ly:127745,bud:149827}, revenue:{ly:10445483,bud:11725283}, uwPremium:{ly:5115115,bud:5847344}, commission:{ly:24053,  bud:27467},   ppc:{ly:135450,bud:200885}, ipt:{ly:1737278,bud:1950151}, gp:{ly:3433587, bud:3699435}  },
+  partnerReferral: { policies:{ly:31622, bud:34442},  revenue:{ly:5348393, bud:6016828},  uwPremium:{ly:2521284,bud:2883177}, commission:{ly:986230, bud:1108342}, ppc:{ly:0,     bud:0},       ipt:{ly:888467, bud:999577},  gp:{ly:952413,  bud:1025732} },
+  aggregator:      { policies:{ly:88828, bud:88828},  revenue:{ly:5651279, bud:5651279},  uwPremium:{ly:3132135,bud:3132135}, commission:{ly:1721394,bud:1721394}, ppc:{ly:0,     bud:0},       ipt:{ly:933881, bud:933881},  gp:{ly:-136130, bud:-136130} },
+  renewals:        { policies:{ly:44884, bud:51325},  revenue:{ly:7404059, bud:8642049},  uwPremium:{ly:4117570,bud:5026427}, commission:{ly:149295, bud:140607},  ppc:{ly:10364, bud:8089},    ipt:{ly:1229730,bud:1436569}, gp:{ly:1897099, bud:2030357} }
+};
+
+// ─────────────────────────────────────────────
+// INSURANCE BRIDGE KPIs
+// ─────────────────────────────────────────────
+const INS_BRIDGE_KPIS = [
+  {
+    key: 'insVolume',
+    title: 'Volume & Premium Growth',
+    color: '#347E7A',
+    changeLabel: '+31k policies · +11% revenue',
+    subLabel: 'LY 293k → Budget 324k · Net of UW Premium &amp; IPT growth',
+    impact: '+~£652k GP',
+    impactClass: 'pos',
+    chartTitle: 'Policies by Channel — LY vs Budget',
+    chartType: 'insPolicies',
+    context: [
+      'Updated Partners: £0.5m GP win phased across FY27, annualised value hitting in March 2027',
+      'Wizard-led session growth (Direct only): starts April 2026 — +1.67%/month until +20% growth cap (~12 months)',
+      'Renewal rate trajectory: 40% by end FY26 (on track), then +1pp/quarter targeting 50% — current auto-renewal at 50%',
+      'Renewals: +6.4k policies (+14.3%) driven by improving renewal rate and auto-renewal programme',
+      'Volume growth is net of proportional UW Premium (+£2.0m) and IPT (+£0.5m) increases',
+      'Aggregator: flat volume — no growth budgeted; channel held at LY run rate'
+    ]
+  },
+  {
+    key: 'insCommission',
+    title: 'Commission Investment',
+    color: '#D9313A',
+    changeLabel: '+£117k commission spend',
+    subLabel: 'LY £2.88m → Budget £3.00m (+4.1%)',
+    impact: '−£117k GP',
+    impactClass: 'neg',
+    chartTitle: 'Commission by Channel — LY vs Budget (£)',
+    chartType: 'insCommission',
+    context: [
+      'Partner Referral: +£122k — growing partner volume drives higher commission as new partners onboard',
+      'Direct: +£3k — small increase aligned with Direct volume growth',
+      'Renewals: −£9k — renewal commission reducing in line with 5-year strategy targeting −95% reduction',
+      'Aggregator: flat — no volume growth; commission rate unchanged',
+      'Renewal commission 5-year strategy: priority on capturing renewals via own journey, reducing partner dependency',
+      'Overall commission % of revenue: LY 9.99% → Budget 9.36% — efficiency improving despite higher absolute spend'
+    ]
+  },
+  {
+    key: 'insPpc',
+    title: 'PPC Investment',
+    color: '#542E91',
+    changeLabel: '+£63k PPC spend',
+    subLabel: 'LY £146k → Budget £209k (+43.3%)',
+    impact: '−£63k GP',
+    impactClass: 'neg',
+    chartTitle: 'PPC Cost by Channel — LY vs Budget (£)',
+    chartType: 'insPpc',
+    context: [
+      'Direct: +£65k — PPC volume optimisation programme starts June 2026 (+10% immediate volume growth)',
+      'GP initially flat vs pre-growth due to GPPP decline as lower-margin PPC policies grow — recovers after ~12 months (June 2027)',
+      'Start date pushed back from March 2026 to June 2026 due to capacity constraints',
+      'Renewals: −£2k — renewal PPC reducing as part of 5-year strategy (target −95%), shifting to personalised journey',
+      'Partner Referral and Aggregator: nil PPC — these channels manage their own or referral-model marketing',
+      'Overall PPC % of revenue: LY 0.51% → Budget 0.65% — small absolute increase, driven entirely by Direct channel'
+    ]
+  }
+];
+
+// ─────────────────────────────────────────────
+// INSURANCE CHANNEL TAB SWITCHER
+// ─────────────────────────────────────────────
+function switchInsChannel(key, btn, color) {
+  document.querySelectorAll('#insuranceSections .eu-region-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#insChannelTabs .eu-region-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = '';
+    b.style.borderColor = '';
+  });
+  document.getElementById('ins-pane-' + key).classList.add('active');
+  btn.classList.add('active');
+  btn.style.background = color;
+  btn.style.borderColor = color;
+}
+
+// ─────────────────────────────────────────────
+// BUILD INSURANCE CHANNEL P&L TABLE
+// ─────────────────────────────────────────────
+function buildInsTable(tableId, channel) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+  const d = INS_DATA[channel.key];
+  const polFmt = v => v >= 1000 ? Math.round(v / 1000).toLocaleString() + 'k' : v.toLocaleString();
+  const rows = [
+    { label: 'Policies',     lyV: polFmt(d.policies.ly),   budV: polFmt(d.policies.bud),   ly: d.policies.ly,   bud: d.policies.bud,   isCost: false },
+    { label: 'Revenue',      lyV: fmt(d.revenue.ly),        budV: fmt(d.revenue.bud),        ly: d.revenue.ly,    bud: d.revenue.bud,    isCost: false },
+    { label: 'UW Premium',   lyV: fmt(d.uwPremium.ly),      budV: fmt(d.uwPremium.bud),      ly: d.uwPremium.ly,  bud: d.uwPremium.bud,  isCost: true  },
+    { label: 'Commission',   lyV: fmt(d.commission.ly),     budV: fmt(d.commission.bud),     ly: d.commission.ly, bud: d.commission.bud, isCost: true  },
+    { label: 'PPC Costs',    lyV: fmt(d.ppc.ly),            budV: fmt(d.ppc.bud),            ly: d.ppc.ly,        bud: d.ppc.bud,        isCost: true  },
+    { label: 'IPT',          lyV: fmt(d.ipt.ly),            budV: fmt(d.ipt.bud),            ly: d.ipt.ly,        bud: d.ipt.bud,        isCost: true  },
+    { label: 'Gross Profit', lyV: fmt(d.gp.ly),             budV: fmt(d.gp.bud),             ly: d.gp.ly,         bud: d.gp.bud,         isCost: false, isGP: true }
+  ];
+  let html = `<thead><tr><th>Metric</th><th>Last Year</th><th>Budget</th><th>Change</th></tr></thead><tbody>`;
+  rows.forEach(r => {
+    const p = r.ly !== 0 ? ((r.bud - r.ly) / Math.abs(r.ly)) * 100 : 0;
+    const sign = p >= 0 ? '+' : '';
+    const pillCls = r.isCost
+      ? (p > 0.1 ? 'down' : p < -0.1 ? 'up' : 'flat')
+      : (p > 0.1 ? 'up'   : p < -0.1 ? 'down' : 'flat');
+    const rowCls = r.isGP ? 'class="gp-row"' : '';
+    html += `<tr ${rowCls}><td>${r.label}</td><td class="num-ly">${r.lyV}</td><td class="num-bud">${r.budV}</td><td><span class="pill ${pillCls}">${sign}${p.toFixed(1)}%</span></td></tr>`;
+  });
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+// INSURANCE CHARTS (initialised on first view)
+// ─────────────────────────────────────────────
+function initInsuranceCharts() {
+  // ── Bridge waterfall ──
+  const lyGP = 6146969, budGP = 6619395;
+  const volEffect = 652422, commHead = -116837, ppcHead = -63160;
+  const s0 = lyGP, s1 = s0 + volEffect, s2 = s1 + commHead;
+  new Chart(document.getElementById('insBridgeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['LY GP', 'Volume &\nPremium', 'Commission\nInvestment', 'PPC\nInvestment', 'Budget GP'],
+      datasets: [{ data: [[0,lyGP],[s0,s0+volEffect],[s1,s1+commHead],[s2,s2+ppcHead],[0,budGP]], backgroundColor: ['#3a1f6b','#347E7A','#D9313A','#D9313A','#2A77B6'], borderRadius: 5, borderSkipped: false }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label: ctx => { const [lo,hi]=ctx.raw; if(lo===0) return ' £'+(hi/1e6).toFixed(2)+'m'; const d=hi-lo; return ' '+(d>=0?'+':'')+fmt(d); }}} },
+      scales: { x:{grid:{display:false},ticks:{font:{size:10}}}, y:{grid:{color:'#f1f5f9'},ticks:{callback:v=>'£'+(v/1e6).toFixed(2)+'m'},min:5800000} }
+    }
+  });
+
+  // ── Bridge KPI cards + panels ──
+  const insBridgeGrid = document.getElementById('insBridgeKpiGrid');
+  const insBridgePanels = document.getElementById('insBridgePanels');
+  const insChartInst = {};
+  INS_BRIDGE_KPIS.forEach(kpi => {
+    const card = document.createElement('div');
+    card.className = 'bridge-kpi';
+    card.style.borderTopColor = kpi.color;
+    card.innerHTML = `
+      <div class="bridge-kpi-label">${kpi.title}</div>
+      <div class="bridge-kpi-change" style="color:${kpi.color}">${kpi.changeLabel}</div>
+      <div class="bridge-kpi-vals">${kpi.subLabel}</div>
+      <span class="bridge-kpi-impact ${kpi.impactClass}">${kpi.impact}</span>
+      <div class="bridge-kpi-cta">
+        <span class="bridge-kpi-cta-icon" style="color:${kpi.color}">▾</span>
+        <span class="bridge-kpi-cta-close">Explore drivers</span>
+        <span class="bridge-kpi-cta-open">Hide details</span>
+      </div>
+    `;
+    insBridgeGrid.appendChild(card);
+    const panel = document.createElement('div');
+    panel.className = 'bridge-panel';
+    panel.style.borderLeftColor = kpi.color;
+    const cid = 'ins-bc-' + kpi.key;
+    panel.innerHTML = `
+      <div class="bridge-panel-header">
+        <h3 style="color:${kpi.color}">${kpi.title} — Detail &amp; Context</h3>
+        <span class="pill ${kpi.impactClass==='pos'?'up':'down'}">${kpi.impact}</span>
+      </div>
+      <div class="bridge-panel-inner">
+        <div>
+          <div style="font-size:.85rem;font-weight:700;color:#374151;margin-bottom:1rem">${kpi.chartTitle}</div>
+          <div style="height:230px"><canvas id="${cid}"></canvas></div>
+        </div>
+        <div class="bridge-context">
+          <h4>Key Assumptions &amp; Drivers</h4>
+          <ul class="bridge-context-list">${kpi.context.map(c=>`<li>${c}</li>`).join('')}</ul>
+          <div class="bridge-impact ${kpi.impactClass}">
+            <span>${kpi.impactClass==='pos'?'▲':'▼'}</span>
+            <span>Estimated GP impact: <strong>${kpi.impact}</strong></span>
+          </div>
+        </div>
+      </div>
+    `;
+    insBridgePanels.appendChild(panel);
+    card.addEventListener('click', () => {
+      const opening = !panel.classList.contains('visible');
+      card.classList.toggle('open', opening);
+      panel.classList.toggle('visible', opening);
+      if (opening && !insChartInst[kpi.key]) {
+        const labels = INS_CHANNELS.map(c => c.name);
+        const colors = INS_CHANNELS.map(c => c.color);
+        const lyDs  = data => ({ label:'Last Year', data, backgroundColor: colors.map(c=>c+'55'), borderColor: colors, borderWidth: 2, borderRadius: 4 });
+        const budDs = data => ({ label:'Budget',    data, backgroundColor: colors, borderRadius: 4, borderWidth: 0 });
+        let datasets, yTick;
+        if (kpi.chartType === 'insPolicies') {
+          datasets = [ lyDs(INS_CHANNELS.map(c=>INS_DATA[c.key].policies.ly)), budDs(INS_CHANNELS.map(c=>INS_DATA[c.key].policies.bud)) ];
+          yTick = v => v >= 1e3 ? Math.round(v/1000)+'k' : v;
+        } else if (kpi.chartType === 'insCommission') {
+          datasets = [ lyDs(INS_CHANNELS.map(c=>INS_DATA[c.key].commission.ly)), budDs(INS_CHANNELS.map(c=>INS_DATA[c.key].commission.bud)) ];
+          yTick = v => fmt(v);
+        } else if (kpi.chartType === 'insPpc') {
+          datasets = [ lyDs(INS_CHANNELS.map(c=>INS_DATA[c.key].ppc.ly)), budDs(INS_CHANNELS.map(c=>INS_DATA[c.key].ppc.bud)) ];
+          yTick = v => fmt(v);
+        }
+        insChartInst[kpi.key] = new Chart(document.getElementById(cid), {
+          type: 'bar',
+          data: { labels, datasets },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position:'bottom', labels:{font:{size:10},boxWidth:10,padding:10} } },
+            scales: { x:{grid:{display:false},ticks:{font:{size:10}}}, y:{grid:{color:'#f1f5f9'},ticks:{callback:yTick,font:{size:10}},suggestedMin:0} }
+          }
+        });
+      }
+    });
+  });
+
+  // ── GP Growth chart ──
+  const gpGrowths = INS_CHANNELS.map(c => INS_DATA[c.key].gp.bud - INS_DATA[c.key].gp.ly);
+  new Chart(document.getElementById('insGpGrowthChart'), {
+    type: 'bar',
+    data: {
+      labels: INS_CHANNELS.map(c => c.name),
+      datasets: [{ data: gpGrowths, backgroundColor: gpGrowths.map((v,i) => v >= 0 ? INS_CHANNELS[i].color : '#D9313A'), borderRadius: 6, borderSkipped: false }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label: ctx => ' '+fmt(ctx.raw)+' ('+pctChange(INS_DATA[INS_CHANNELS[ctx.dataIndex].key].gp.bud, INS_DATA[INS_CHANNELS[ctx.dataIndex].key].gp.ly)+')'}} },
+      scales: { x:{grid:{color:'#f1f5f9'},ticks:{callback:v=>fmt(v)}}, y:{grid:{display:false}} }
+    }
+  });
+
+  // ── Revenue Growth chart ──
+  const revGrowths = INS_CHANNELS.map(c => INS_DATA[c.key].revenue.bud - INS_DATA[c.key].revenue.ly);
+  new Chart(document.getElementById('insRevGrowthChart'), {
+    type: 'bar',
+    data: {
+      labels: INS_CHANNELS.map(c => c.name),
+      datasets: [{ data: revGrowths, backgroundColor: revGrowths.map((v,i) => v >= 0 ? INS_CHANNELS[i].color : '#D9313A'), borderRadius: 6, borderSkipped: false }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label: ctx => ' '+fmt(ctx.raw)+' ('+pctChange(INS_DATA[INS_CHANNELS[ctx.dataIndex].key].revenue.bud, INS_DATA[INS_CHANNELS[ctx.dataIndex].key].revenue.ly)+')'}} },
+      scales: { x:{grid:{color:'#f1f5f9'},ticks:{callback:v=>fmt(v)}}, y:{grid:{display:false}} }
+    }
+  });
+
+  // ── Distribution Spend chart ──
+  const totalRevBud = INS_CHANNELS.reduce((s,c) => s + INS_DATA[c.key].revenue.bud, 0);
+  new Chart(document.getElementById('insDistSpendChart'), {
+    type: 'bar',
+    data: {
+      labels: INS_CHANNELS.map(c => c.name),
+      datasets: [
+        { label:'Commission', data:INS_CHANNELS.map(c=>INS_DATA[c.key].commission.bud), backgroundColor:INS_CHANNELS.map(c=>c.color), borderRadius:4 },
+        { label:'PPC',        data:INS_CHANNELS.map(c=>INS_DATA[c.key].ppc.bud),        backgroundColor:INS_CHANNELS.map(c=>c.color+'70'), borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}, tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+fmt(ctx.raw)}} },
+      scales: { x:{stacked:true,grid:{display:false}}, y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{callback:v=>fmt(v)}} }
+    }
+  });
+
+  // ── Distribution Detail table ──
+  const ddBody = document.getElementById('insDistDetailBody');
+  INS_CHANNELS.forEach(c => {
+    const d = INS_DATA[c.key];
+    const totalDist = d.commission.bud + d.ppc.bud;
+    const distPct = d.revenue.bud > 0 ? (totalDist / d.revenue.bud * 100).toFixed(1) + '%' : '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="product-dot" style="background:${c.color}"></span>${c.name}</td>
+      <td class="num-ly">${fmt(d.commission.ly)}</td><td class="num-bud">${fmt(d.commission.bud)}</td>
+      <td class="num-ly">${fmt(d.ppc.ly)}</td><td class="num-bud">${fmt(d.ppc.bud)}</td>
+      <td class="num-bud">${fmt(totalDist)}</td><td>${distPct}</td>
+    `;
+    ddBody.appendChild(tr);
+  });
+  const commLyT  = INS_CHANNELS.reduce((s,c) => s + INS_DATA[c.key].commission.ly,  0);
+  const commBudT = INS_CHANNELS.reduce((s,c) => s + INS_DATA[c.key].commission.bud, 0);
+  const ppcLyT   = INS_CHANNELS.reduce((s,c) => s + INS_DATA[c.key].ppc.ly,  0);
+  const ppcBudT  = INS_CHANNELS.reduce((s,c) => s + INS_DATA[c.key].ppc.bud, 0);
+  const totalDistT = commBudT + ppcBudT;
+  const trTotal = document.createElement('tr'); trTotal.className = 'total-row';
+  trTotal.innerHTML = `<td>Total</td><td>${fmt(commLyT)}</td><td>${fmt(commBudT)}</td><td>${fmt(ppcLyT)}</td><td>${fmt(ppcBudT)}</td><td>${fmt(totalDistT)}</td><td>${(totalDistT/totalRevBud*100).toFixed(2)}%</td>`;
+  ddBody.appendChild(trTotal);
+
+  // ── Channel KPI cards ──
+  const polFmt = v => v >= 1000 ? Math.round(v / 1000) + 'k' : v;
+  INS_CHANNELS.forEach(c => {
+    const el = document.getElementById('ins-kpi-' + c.key);
+    if (!el) return;
+    const d = INS_DATA[c.key];
+    const gpMargLy  = (d.gp.ly  / d.revenue.ly  * 100).toFixed(2);
+    const gpMargBud = (d.gp.bud / d.revenue.bud * 100).toFixed(2);
+    const revPolLy  = (d.revenue.ly  / d.policies.ly ).toFixed(2);
+    const revPolBud = (d.revenue.bud / d.policies.bud).toFixed(2);
+    const gpPolLy   = (d.gp.ly  / d.policies.ly ).toFixed(2);
+    const gpPolBud  = (d.gp.bud / d.policies.bud).toFixed(2);
+    const commPctLy  = (d.commission.ly  / d.revenue.ly  * 100).toFixed(2);
+    const commPctBud = (d.commission.bud / d.revenue.bud * 100).toFixed(2);
+    const div = document.createElement('div');
+    div.className = 'product-kpis';
+    div.innerHTML = `
+      <div class="prod-kpi"><div class="prod-kpi-label">Policies</div><div class="prod-kpi-val">${polFmt(d.policies.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${polFmt(d.policies.ly)}</span>&nbsp;${pill(d.policies.bud,d.policies.ly)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Revenue</div><div class="prod-kpi-val">${fmt(d.revenue.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${fmt(d.revenue.ly)}</span>&nbsp;${pill(d.revenue.bud,d.revenue.ly)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">GP Margin %</div><div class="prod-kpi-val">${gpMargBud}%</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${gpMargLy}%</span>&nbsp;${pill(parseFloat(gpMargBud),parseFloat(gpMargLy))}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Gross Profit</div><div class="prod-kpi-val">${fmt(d.gp.bud)}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${fmt(d.gp.ly)}</span>&nbsp;${pill(d.gp.bud,d.gp.ly)}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Revenue per Policy</div><div class="prod-kpi-val">£${revPolBud}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY £${revPolLy}</span>&nbsp;${pill(parseFloat(revPolBud),parseFloat(revPolLy))}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">GP per Policy</div><div class="prod-kpi-val">£${gpPolBud}</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY £${gpPolLy}</span>&nbsp;${pill(parseFloat(gpPolBud),parseFloat(gpPolLy))}</div></div>
+      <div class="prod-kpi"><div class="prod-kpi-label">Commission % Rev</div><div class="prod-kpi-val">${commPctBud}%</div><div class="prod-kpi-row"><span class="prod-kpi-ly">LY ${commPctLy}%</span>&nbsp;${pill(parseFloat(commPctBud),parseFloat(commPctLy),true)}</div></div>
+    `;
+    el.appendChild(div);
+  });
+
+  // ── Channel P&L tables ──
+  INS_CHANNELS.forEach(c => buildInsTable('insTable' + c.key.charAt(0).toUpperCase() + c.key.slice(1), c));
+}
+
+</script>
+
+</body>
+</html>
