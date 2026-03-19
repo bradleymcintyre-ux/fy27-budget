@@ -6,6 +6,45 @@
   <title>FY27 Budget — UK Distribution</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
+    #hx-gate { position: fixed; inset: 0; z-index: 99999; background: linear-gradient(135deg, #3a1f6b 0%, #542E91 60%, #47277B 100%); display: flex; align-items: center; justify-content: center; }
+    #hx-gate-box { background: white; border-radius: 20px; padding: 2.5rem 2.75rem; width: 100%; max-width: 380px; box-shadow: 0 24px 60px rgba(0,0,0,0.35); text-align: center; }
+    #hx-gate-logo { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; color: #542E91; margin-bottom: 1.5rem; opacity: 0.7; }
+    #hx-gate-title { font-size: 1.25rem; font-weight: 900; color: #1a1a2e; margin-bottom: 0.4rem; }
+    #hx-gate-sub { font-size: 0.78rem; color: #9ca3af; margin-bottom: 1.75rem; }
+    #hx-gate-input { width: 100%; padding: 0.85rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; font-family: inherit; letter-spacing: 0.05em; outline: none; transition: border-color 0.15s; text-align: center; }
+    #hx-gate-input:focus { border-color: #542E91; }
+    #hx-gate-input.error { border-color: #D9313A; animation: shake 0.3s ease; }
+    #hx-gate-btn { margin-top: 0.85rem; width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #3a1f6b, #542E91); color: white; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
+    #hx-gate-btn:hover { opacity: 0.88; }
+    #hx-gate-err { margin-top: 0.65rem; font-size: 0.75rem; color: #D9313A; font-weight: 600; min-height: 1rem; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  </style>
+  <script>
+    (function() {
+      if (sessionStorage.getItem('hx-auth') === 'ok') return;
+      document.addEventListener('DOMContentLoaded', function() {
+        var gate = document.getElementById('hx-gate');
+        var input = document.getElementById('hx-gate-input');
+        var err = document.getElementById('hx-gate-err');
+        function attempt() {
+          if (input.value === 'claude_FY_27_secure_code') {
+            sessionStorage.setItem('hx-auth', 'ok');
+            gate.style.opacity = '0';
+            gate.style.transition = 'opacity 0.4s';
+            setTimeout(function() { gate.remove(); }, 400);
+          } else {
+            input.classList.add('error');
+            err.textContent = 'Incorrect passcode — try again';
+            setTimeout(function() { input.classList.remove('error'); }, 400);
+            input.value = '';
+          }
+        }
+        document.getElementById('hx-gate-btn').addEventListener('click', attempt);
+        input.addEventListener('keydown', function(e) { if (e.key === 'Enter') attempt(); });
+      });
+    })();
+  </script>
+  <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; color: #1a2433; }
 
