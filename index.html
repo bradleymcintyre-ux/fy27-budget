@@ -1900,6 +1900,7 @@ function pill(bud, ly, invertSign = false) {
       const opening = !panel.classList.contains('visible');
       card.classList.toggle('open', opening);
       panel.classList.toggle('visible', opening);
+      if (opening) setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 
       if (opening && !chartInst[kpi.key]) {
         const labels = PRODUCTS.map(p => p.name);
@@ -2075,6 +2076,7 @@ function switchUkCtx(tab, btn) {
       const opening = !panel.classList.contains('visible');
       card.classList.toggle('open', opening);
       panel.classList.toggle('visible', opening);
+      if (opening) setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     });
   });
 })();
@@ -2300,6 +2302,7 @@ function initEuCharts() {
       const opening = !panel.classList.contains('visible');
       card.classList.toggle('open', opening);
       panel.classList.toggle('visible', opening);
+      if (opening) setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       if (opening && !euChartInst[kpi.key]) {
         const labels = EU_REGIONS.map(r => r.name);
         const colors = EU_REGIONS.map(r => r.color);
@@ -2949,6 +2952,7 @@ function initInsuranceCharts() {
       const opening = !panel.classList.contains('visible');
       card.classList.toggle('open', opening);
       panel.classList.toggle('visible', opening);
+      if (opening) setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
       if (opening && !insChartInst[kpi.key]) {
         const labels = INS_CHANNELS.map(c => c.name);
         const colors = INS_CHANNELS.map(c => c.color);
@@ -3086,4 +3090,3 @@ function initInsuranceCharts() {
 
 </body>
 </html>
-
