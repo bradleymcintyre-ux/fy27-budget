@@ -21,22 +21,30 @@
   </style>
   <script>
     (function() {
-      if (sessionStorage.getItem('hx-auth') === 'ok') return;
+      if (sessionStorage.getItem('hx-auth-v3') === 'ok') return;
       document.addEventListener('DOMContentLoaded', function() {
         var gate = document.getElementById('hx-gate');
         var input = document.getElementById('hx-gate-input');
         var err = document.getElementById('hx-gate-err');
+        var attempts = 0;
         function attempt() {
-          if (input.value === 'claude_FY_27_secure_code') {
-            sessionStorage.setItem('hx-auth', 'ok');
+          var val = input.value.trim();
+          if (val === 'claude_FY_27_secure_code') {
+            sessionStorage.setItem('hx-auth-v3', 'ok');
+            err.textContent = '';
             gate.style.opacity = '0';
             gate.style.transition = 'opacity 0.4s';
             setTimeout(function() { gate.remove(); }, 400);
           } else {
+            attempts++;
             input.classList.add('error');
-            err.textContent = 'Incorrect passcode — try again';
-            setTimeout(function() { input.classList.remove('error'); }, 400);
             input.value = '';
+            if (attempts >= 3) {
+              err.textContent = 'Too many incorrect attempts. Contact the dashboard owner for the passcode.';
+            } else {
+              err.textContent = 'Incorrect passcode — please try again';
+            }
+            setTimeout(function() { input.classList.remove('error'); }, 400);
           }
         }
         document.getElementById('hx-gate-btn').addEventListener('click', attempt);
